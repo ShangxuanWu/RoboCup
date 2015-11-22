@@ -1,0 +1,224 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     06/Jul/2014  17:01:59 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  F:\robot _init\robot\project\robot_car_com\app\graph.c   #
+#    Command line =  "F:\robot _init\robot\project\robot_car_com\app\graph.c" #
+#                     -D IAR -D LPLD_K60 -lCN "F:\robot                       #
+#                    _init\robot\project\robot_car_com\iar\FLASH\List\" -lB   #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\FLASH\Li #
+#                    st\" -o "F:\robot _init\robot\project\robot_car_com\iar\ #
+#                    FLASH\Obj\" --no_cse --no_unroll --no_inline             #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config "D:\IAR Systems\Embedded     #
+#                    Workbench 6.4\arm\INC\c\DLib_Config_Normal.h" -I         #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\..\app\" #
+#                     -I "F:\robot _init\robot\project\robot_car_com\iar\..\. #
+#                    .\..\lib\common\" -I "F:\robot                           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\cpu\" #
+#                     -I "F:\robot _init\robot\project\robot_car_com\iar\..\. #
+#                    .\..\lib\cpu\headers\" -I "F:\robot                      #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\adc16\" -I "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\..\..\..\lib\drivers\enet\" -I "F:\robot           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\lptmr\" -I "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\..\..\..\lib\drivers\mcg\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\pmc\" -I "F:\robot _init\robot\project\robot_car_com\ #
+#                    iar\..\..\..\lib\drivers\rtc\" -I "F:\robot              #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\uart\" -I "F:\robot _init\robot\project\robot_car_com #
+#                    \iar\..\..\..\lib\drivers\wdog\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\platf #
+#                    orms\" -I "F:\robot _init\robot\project\robot_car_com\ia #
+#                    r\..\..\..\lib\LPLD\" -I "F:\robot                       #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\LPLD\ #
+#                    FatFs\" -I "F:\robot _init\robot\project\robot_car_com\i #
+#                    ar\..\..\..\lib\LPLD\USB\" -I "F:\robot                  #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\iar_c #
+#                    onfig_files\" -Ol                                        #
+#    List file    =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Lis #
+#                    t\graph.lst                                              #
+#    Object file  =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Obj #
+#                    \graph.o                                                 #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\robot _init\robot\project\robot_car_com\app\graph.c
+      1          
+      2          #include <stdlib.h>
+      3          #include "common.h"
+      4          
+      5          #define INT_MAX 0x7fffffff
+      6          
+      7          #define GRAPH_QUEUE_SIZE (GRAPH_POINT_NUM + 1)
+      8          struct GraphQueue {
+      9          	int head, tail, size;
+     10          	int data[GRAPH_QUEUE_SIZE];
+     11          };
+     12          
+     13          void graph_queue_init(struct GraphQueue *q) {
+     14          	q->head = q->tail = q->size = 0;
+     15          }
+     16          
+     17          int graph_queue_push(struct GraphQueue *q, int d) {
+     18          	if (q->size == GRAPH_QUEUE_SIZE) return -1;
+     19          	q->data[q->tail] = d;
+     20          	q->tail = (q->tail + 1) % GRAPH_QUEUE_SIZE;
+     21          	q->size ++;
+     22          	return 0;
+     23          }
+     24          
+     25          int graph_queue_front(struct GraphQueue *q) {
+     26          	return q->data[q->head];
+     27          }
+     28          
+     29          int graph_queue_pop(struct GraphQueue *q) {
+     30          	if (q->size == 0) return -1;
+     31          	q->head = (q->head + 1) % GRAPH_QUEUE_SIZE;
+     32          	q->size --;
+     33          	return 0;
+     34          }
+     35          
+     36          static int graph_points[GRAPH_POINT_NUM + 1];
+     37          static struct Edge graph_edges[GRAPH_EDGE_NUM + 1];
+     38          static int last_edge = 0;
+     39          
+     40          /*
+     41            4----3----2----1----0 (0, 0)
+     42            |         |         |
+     43            5         6         7
+     44            |         |         |
+     45            12---11---10---9----8
+     46            |         |         |
+     47            13        14        15
+     48            |         |         |
+     49            20---19---18---17---16
+     50          */
+     51          
+     52          static int point2num[5][5] = {
+     53          	{0, 1, 2, 3, 4},
+     54          	{7, -1, 6, -1, 5},
+     55          	{8, 9, 10, 11, 12},
+     56          	{15, -1, 14, -1, 13},
+     57          	{16, 17, 18, 19, 20}
+     58          };
+     59          static struct Point num2point[21] = {
+     60          	{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0},
+     61          	{4, 1}, {2, 1}, {0, 1},
+     62          	{0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2},
+     63          	{4, 3}, {2, 3}, {0, 3},
+     64          	{0, 4}, {1, 4}, {2, 4}, {3, 4}, {4, 4}
+     65          };
+     66          
+     67          int graph_get_point_number(struct Point p) {
+     68          	if (p.x < 0 || p.x > 5 || p.y < 0 || p.y > 5) return -1;
+     69          	return point2num[p.x][p.y];
+     70          }
+     71          
+     72          struct Point *graph_get_point(int num) {
+     73          	if (num > 20 || num < 0) return NULL;
+     74          	return &num2point[num];
+     75          }
+     76          
+     77          void graph_add_directed_edge(int from, int to) {
+     78          	graph_edges[last_edge].next_pnt = to;
+     79          	graph_edges[last_edge].next_edge = graph_points[from];
+     80          	graph_points[from] = last_edge ++;
+     81          }
+     82          
+     83          void graph_add_undirected_edge(int p1, int p2) {
+     84          	graph_add_directed_edge(p1, p2);
+     85          	graph_add_directed_edge(p2, p1);
+     86          }
+     87          
+     88          void graph_init(void) {
+     89          	last_edge = 0;
+     90          	memset(graph_points, -1, sizeof(graph_points));
+     91          	for (int i = 0; i < GRAPH_EDGE_NUM + 1; ++ i) graph_edges[i].weight = 1;
+     92          	graph_add_undirected_edge(0, 1);
+     93          	graph_add_undirected_edge(1, 2);
+     94          	graph_add_undirected_edge(2, 3);
+     95          	graph_add_undirected_edge(3, 4);
+     96          	graph_add_undirected_edge(4, 5);
+     97          	graph_add_undirected_edge(2, 6);
+     98          	graph_add_undirected_edge(0, 7);
+     99          	graph_add_undirected_edge(5, 12);
+    100          	graph_add_undirected_edge(6, 10);
+    101          	graph_add_undirected_edge(7, 8);
+    102          	graph_add_undirected_edge(8, 9);
+    103          	graph_add_undirected_edge(9, 10);
+    104          	graph_add_undirected_edge(10, 11);
+    105          	graph_add_undirected_edge(11, 12);
+    106          	graph_add_undirected_edge(12, 13);
+    107          	graph_add_undirected_edge(10, 14);
+    108          	graph_add_undirected_edge(8, 15);
+    109          	graph_add_undirected_edge(13, 20);
+    110          	graph_add_undirected_edge(14, 18);
+    111          	graph_add_undirected_edge(15, 16);
+    112          	graph_add_undirected_edge(16, 17);
+    113          	graph_add_undirected_edge(17, 18);
+    114          	graph_add_undirected_edge(18, 19);
+    115          	graph_add_undirected_edge(19, 20);
+    116          }
+    117          
+    118          void swap_int(int *a, int *b) {
+    119          	*a = (*a) ^ (*b);
+    120          	*b = (*a) ^ (*b);
+    121          	*a = (*a) ^ (*b);
+    122          }
+    123          
+    124          void __reverset_path(int *path, int path_size) {
+    125          	for (int i = 0, j = path_size - 1; i < j; ++ i, -- j) {
+    126          		swap_int(&path[i], &path[j]);
+    127          	}
+    128          }
+    129          
+    130          void graph_spfa(int pnum_from, int pnum_to, int *path, int *path_size) {
+    131          	if (path == NULL || path_size == NULL) return;
+    132          	static struct GraphQueue queue;
+    133          	static int pre[GRAPH_POINT_NUM + 1];
+    134          	static int dist[GRAPH_POINT_NUM + 1];
+    135          	static _Bool visited[GRAPH_POINT_NUM + 1];
+    136          	
+    137          	memset(pre, -1, sizeof(pre));
+    138          	graph_queue_init(&queue);
+    139          	memset(visited, 0, sizeof(visited));
+    140          	for (int i = 0; i < GRAPH_POINT_NUM + 1; ++ i) dist[i] = INT_MAX;
+    141          	visited[pnum_from] = 1;
+    142          	dist[pnum_from] = 0;
+    143          	graph_queue_push(&queue, pnum_from);
+    144          	while (queue.size != 0) {
+    145          		int cur = graph_queue_front(&queue);
+    146          		graph_queue_pop(&queue);
+    147          		for (int e = graph_points[cur]; e != -1; e = graph_edges[e].next_edge) {
+    148          			int new_weight = dist[cur] + graph_edges[e].weight;
+    149          			if (dist[graph_edges[e].next_pnt] > new_weight) {
+    150          				dist[graph_edges[e].next_pnt] = new_weight;
+    151          				pre[graph_edges[e].next_pnt] = cur;
+    152          				if (!visited[graph_edges[e].next_pnt]) {
+    153          					visited[graph_edges[e].next_pnt] = 1;
+    154          					graph_queue_push(&queue, graph_edges[e].next_pnt);
+    155          				}
+    156          			}
+    157          		}
+    158          		visited[cur] = 0;
+    159          	}
+    160          	
+    161          	*path_size = 0;
+    162          	int cur = pnum_to;
+    163          	while (cur != -1) {
+    164          		path[(*path_size) ++] = cur;
+    165          		cur = pre[cur];
+    166          	}
+    167          	__reverset_path(path, *path_size);
+    168          }
+
+Errors: 4
+Warnings: none

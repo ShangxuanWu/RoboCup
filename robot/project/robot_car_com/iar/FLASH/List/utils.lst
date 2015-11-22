@@ -1,0 +1,179 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     06/Jul/2014  17:01:58 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  F:\robot _init\robot\project\robot_car_com\app\utils.c   #
+#    Command line =  "F:\robot _init\robot\project\robot_car_com\app\utils.c" #
+#                     -D IAR -D LPLD_K60 -lCN "F:\robot                       #
+#                    _init\robot\project\robot_car_com\iar\FLASH\List\" -lB   #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\FLASH\Li #
+#                    st\" -o "F:\robot _init\robot\project\robot_car_com\iar\ #
+#                    FLASH\Obj\" --no_cse --no_unroll --no_inline             #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config "D:\IAR Systems\Embedded     #
+#                    Workbench 6.4\arm\INC\c\DLib_Config_Normal.h" -I         #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\..\app\" #
+#                     -I "F:\robot _init\robot\project\robot_car_com\iar\..\. #
+#                    .\..\lib\common\" -I "F:\robot                           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\cpu\" #
+#                     -I "F:\robot _init\robot\project\robot_car_com\iar\..\. #
+#                    .\..\lib\cpu\headers\" -I "F:\robot                      #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\adc16\" -I "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\..\..\..\lib\drivers\enet\" -I "F:\robot           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\lptmr\" -I "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\..\..\..\lib\drivers\mcg\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\pmc\" -I "F:\robot _init\robot\project\robot_car_com\ #
+#                    iar\..\..\..\lib\drivers\rtc\" -I "F:\robot              #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\uart\" -I "F:\robot _init\robot\project\robot_car_com #
+#                    \iar\..\..\..\lib\drivers\wdog\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\platf #
+#                    orms\" -I "F:\robot _init\robot\project\robot_car_com\ia #
+#                    r\..\..\..\lib\LPLD\" -I "F:\robot                       #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\LPLD\ #
+#                    FatFs\" -I "F:\robot _init\robot\project\robot_car_com\i #
+#                    ar\..\..\..\lib\LPLD\USB\" -I "F:\robot                  #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\iar_c #
+#                    onfig_files\" -Ol                                        #
+#    List file    =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Lis #
+#                    t\utils.lst                                              #
+#    Object file  =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Obj #
+#                    \utils.o                                                 #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\robot _init\robot\project\robot_car_com\app\utils.c
+      1          #include "utils.h"
+      2          #include "config.h"
+      3          
+      4          
+      5          //                     N  E  W   S
+      6          static int mov_x[4] = {0, 1, 0, -1};
+      7          static int mov_y[4] = {1, 0, -1, 0};
+      8          
+      9          enum COMMAND __command_map(enum COMMAND cmd) {
+     10          	if (BEGIN_POINT == 0 || BEGIN_POINT == 20) {
+     11          		return cmd;
+     12          	}
+     13          	else {
+     14          		if (cmd == C_LEFT) return C_RIGHT;
+     15          		else if (cmd == C_RIGHT) return C_LEFT;
+     16          		else return cmd;
+     17          	}
+     18          }
+     19          
+     20          enum DIRECTION get_next_direction(enum COMMAND cmd, enum DIRECTION direction) {
+     21          	switch (__command_map(cmd)) {
+     22          		case C_LEFT:
+     23          			return (enum DIRECTION) ((direction - 1) % 4);
+     24          		case C_RIGHT:
+     25          			return (enum DIRECTION) ((direction + 1) % 4);
+     26          		case C_AROUND:
+     27          			return (enum DIRECTION) ((direction + 2) % 4);
+     28          		default:
+     29          			return direction;
+     30          	}
+     31          }
+     32          
+     33          struct Point get_next_point(enum COMMAND cmd, enum DIRECTION direction, struct Point current_pnt) {
+     34          	struct Point result;
+     35          	enum DIRECTION nxtdir = get_next_direction(cmd, direction);
+     36          	result.x = current_pnt.x + mov_x[nxtdir];
+     37          	result.y = current_pnt.y + mov_y[nxtdir];
+     38          	return result;
+     39          }
+     40          
+     41          enum DIRECTION __direction_map(enum DIRECTION dir) {
+     42          	if (BEGIN_POINT == 0 || BEGIN_POINT == 20) {
+     43          		return dir;
+     44          	}
+     45          	else {
+     46          		switch (dir) {
+     47          			case D_NORTH:
+     48          			case D_SOUTH:
+     49          				return dir;
+     50          			case D_EAST:
+     51          				return D_WEST;
+     52          			case D_WEST:
+     53          				return D_WEST;
+     54          			default:
+     55          				return D_ERROR;
+     56          		}
+     57          	}
+     58          }
+     59          
+     60          enum DIRECTION get_adj_point_direction(struct Point f, struct Point t) {
+     61          	if (t.x > f.x) return D_EAST;
+     62          	else if (t.x < f.x) return D_WEST;
+     63          	else if (t.y > f.y) return D_NORTH;
+     64          	else if (t.y < f.y) return D_SOUTH;
+     65          	else return D_ERROR;
+     66          }
+     67          
+     68          static enum COMMAND __dir2cmd[4][4] = {
+     69          	{C_STOP, C_RIGHT, C_AROUND, C_LEFT}, // NORTH
+     70          	{C_LEFT, C_STOP, C_RIGHT, C_AROUND}, // EAST
+     71          	{C_AROUND, C_LEFT, C_STOP, C_RIGHT}, // WEST
+     72          	{C_RIGHT, C_AROUND, C_LEFT, C_STOP}  // SOUTH
+     73          };
+     74          
+     75          enum COMMAND get_turn_command(enum DIRECTION cur, enum DIRECTION dest) {
+     76          	return __dir2cmd[cur][__direction_map(dest)];
+     77          }
+     78          
+     79          int execute_command(enum COMMAND cmd) {
+     80          	switch (cmd) {
+     81          		case C_AHEAD:		return control_goahead(4000);
+     82          		case C_GETCORNER:	return control_getcorner();
+     83          		case C_LEFT:		return control_turnleft();
+     84          		case C_RIGHT:		return control_turnright();
+     85          		case C_AROUND: 		return control_turnaround();
+     86          		case C_STOP:
+     87          		default:			return control_stop();
+     88          	}
+     89          }
+     90          
+     91          void swap_uint8(uint8 *a, uint8 *b) {
+     92          	*a = (*a) ^ (*b);
+     93          	*b = (*a) ^ (*b);
+     94          	*a = (*a) ^ (*b);
+     95          }
+     96          
+     97          void __field_sensors_vertical_mirror(uint8 field_sensors[10]) {
+     98          	swap_uint8(&field_sensors[0], &field_sensors[7]);
+     99          	swap_uint8(&field_sensors[1], &field_sensors[8]);
+    100          	swap_uint8(&field_sensors[4], &field_sensors[5]);
+    101          	swap_uint8(&field_sensors[2], &field_sensors[9]);
+    102          }
+    103          
+    104          void __field_sensors_horizontal_mirror(uint8 field_sensors[10]) {
+    105          	swap_uint8(&field_sensors[0], &field_sensors[2]);
+    106          	swap_uint8(&field_sensors[3], &field_sensors[6]);
+    107          	swap_uint8(&field_sensors[7], &field_sensors[9]);
+    108          }
+    109          
+    110          void get_field_sensors(uint8 field_sensors[10]) {
+    111          	GetFieldSensors(field_sensors);
+    112          	
+    113          	if (BEGIN_POINT == 4) {
+    114          		__field_sensors_horizontal_mirror(field_sensors);
+    115          	}
+    116          	else if (BEGIN_POINT == 16) {
+    117          		__field_sensors_vertical_mirror(field_sensors);
+    118          	}
+    119          	else if (BEGIN_POINT == 20) {
+    120          		__field_sensors_horizontal_mirror(field_sensors);
+    121          		__field_sensors_vertical_mirror(field_sensors);
+    122          	}
+    123          }
+
+Errors: 21
+Warnings: 7

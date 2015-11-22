@@ -1,0 +1,297 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     30/Jul/2014  22:50:09 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\app\move.c                               #
+#    Command line =  C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\app\move.c -D IAR -D LPLD_K60 -lCN       #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\ -lB                      #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\ -o                       #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\FLASH\Obj\ --no_cse --no_unroll      #
+#                    --no_inline --no_code_motion --no_tbaa --no_clustering   #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config                              #
+#                    D:\IAR\arm\INC\c\DLib_Config_Normal.h -I                 #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\app\ -I                           #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\common\ -I              #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\cpu\ -I                 #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\cpu\headers\ -I         #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\adc16\ -I       #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\enet\ -I        #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\lptmr\ -I       #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\mcg\ -I         #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\pmc\ -I         #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\rtc\ -I         #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\uart\ -I        #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\wdog\ -I        #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\platforms\ -I           #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\ -I                #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\FatFs\ -I          #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\USB\ -I            #
+#                    C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\iar_config_files\ -Ol   #
+#    List file    =  C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\move.lst                  #
+#    Object file  =  C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\projec #
+#                    t\robot_car_com\iar\FLASH\Obj\move.o                     #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\hp\Desktop\°²·À»úÆ÷ÈË´óÈü\³ÌĞò¹¤³Ì\robot\project\robot_car_com\app\move.c
+      1          #include "move.h"
+      2          #include "control.h"
+      3          #include "util.h"
+      4          #define PATH_MAX_LENGTH 40
+      5          int move_direction =0;
+      6          int move_last_point=23;
+      7          int move_now_point=23;
+      8          int move_next_point=23;
+      9          int move_path[PATH_MAX_LENGTH];
+     10          int move_path_length=0;
+     11          int move_now_point_path_index=0;
+     12          
+     13          int move_next_action;
+     14          
+     15          					// 	 0,  1,   2,   3
+     16          int next_point[10][4]={ 27, -1,  -1,  -1,  	//23
+     17          						-1, -1,  28,  -1,  	//24
+     18          						-1, -1,  29,  -1,  	//25
+     19          						30, -1,  -1,  -1,  	//26
+     20          						32, 30,  23,  28,  	//27
+     21          						24, 27,  32,  29,  	//28
+     22          						25, 28,  31,  30,  	//29
+     23          						31, 29,  26,  27,  	//30
+     24          						29, -1,  30,  32,  	//31
+     25          						28, 31,  27,  -1  	//32
+     26          						};
+     27          
+     28          int point2index(int x)
+     29          {
+     30          	if(x-23>=0&&x-23<=10)
+     31          	return x-23;
+     32                  return -1;
+     33          }
+     34          
+     35          						
+     36          void update_point()
+     37          {
+     38                  beep();
+     39          	int last_point_index = point2index(move_last_point);
+     40          	if(next_point[last_point_index][move_direction]>0)
+     41          	{
+     42          		
+     43          		move_now_point=next_point[last_point_index][move_direction];
+     44          		move_last_point=move_now_point;
+     45          		move_now_point_path_index++;
+     46          		if(move_now_point_path_index+1<move_path_length)
+     47          			move_next_point=move_path[move_now_point_path_index+1];
+     48          		else
+     49          			move_next_point=move_now_point;
+     50          	}
+     51          	else
+     52          	{
+     53          		//TODO:é”™è¯¯å¤„ç†
+     54          	}
+     55          }
+     56          						
+     57          void update_direction(int action)
+     58          {
+     59          	if(action==TURN_LEFT)
+     60          	{
+     61          		if(move_now_point==27||move_now_point==30||move_now_point==31||move_now_point==32)
+     62          		{
+     63          			move_direction=(move_direction+4-1)%4;
+     64          		}
+     65          		if(move_now_point==28||move_now_point==29)
+     66          		{
+     67          			move_direction=(move_direction+1)%4;
+     68          		}
+     69          	}
+     70          	
+     71          	if(action==TURN_RIGHT)
+     72          	{
+     73          		if(move_now_point==27||move_now_point==30||move_now_point==31||move_now_point==32)
+     74          		{
+     75          			move_direction=(move_direction+1)%4;
+     76          		}
+     77          		if(move_now_point==28||move_now_point==29)
+     78          		{
+     79          			move_direction=(move_direction+4-1)%4;
+     80          		}
+     81          	}
+     82          	
+     83          	if(action==TURN_BACK)
+     84          	{
+     85          		move_direction=(move_direction+2)%4;
+     86          	}
+     87          }
+     88          
+     89          int now_point_index;
+     90          int move_get_next_action()
+     91          {
+     92          	if(move_next_point==move_now_point)return STOP;
+     93          <<<<<<< .mine
+     94          	int now_point_index=point2index(move_now_point);
+     95          =======
+     96          	 now_point_index=point2index(move_now_point);
+     97          >>>>>>> .r18
+     98          	if(move_next_point==next_point[now_point_index][move_direction])
+     99          	{
+    100          		//if(move_next_point>=23&&move_next_point<=26) return GET_END;
+    101          		return GO_AHEAD;
+    102          	}
+    103          	else
+    104          	{
+    105          		for(int i=0;i<4;i++)
+    106          		{
+    107          			if(next_point[now_point_index][i]==move_next_point)
+    108          			{
+    109          				int mode = i-move_direction;
+    110          				switch(mode)
+    111          				{
+    112          					case 2:
+    113          					case -2:
+    114          						return TURN_BACK;
+    115          						break;
+    116          					case 1:
+    117          					case -3:
+    118          						if(move_now_point==28||move_now_point==29)return TURN_LEFT;
+    119          						if(move_now_point==31||move_now_point==32||
+    120          						   move_now_point==27||move_now_point==30)return TURN_RIGHT;
+    121          						break;
+    122          					case -1:
+    123          					case 3:
+    124          						if(move_now_point==28||move_now_point==29)return TURN_RIGHT;
+    125          						if(move_now_point==31||move_now_point==32||
+    126          						   move_now_point==27||move_now_point==30)return TURN_LEFT;
+    127          						break;
+    128          				}
+    129          			}
+    130          		}
+    131          	}
+    132                  return STOP;
+    133          }
+    134          
+    135          void turn_right_call_back()
+    136          {
+    137          
+    138          	update_direction(TURN_RIGHT);
+    139          	move_next_action=move_get_next_action();
+    140          	control_set_action(move_next_action);
+    141          }
+    142          
+    143          void turn_left_call_back()
+    144          {
+    145          	update_direction(TURN_LEFT);
+    146          	move_next_action = move_get_next_action();
+    147          	control_set_action(move_next_action);
+    148          }
+    149          
+    150          void turn_back_call_back()
+    151          {
+    152          	update_direction(TURN_BACK);
+    153          	move_next_action = move_get_next_action();
+    154          	control_set_action(move_next_action);
+    155          }
+    156          
+    157          void get_cross_call_back()
+    158          {
+    159          	move_next_action = move_get_next_action();
+    160          	control_set_action(move_next_action);
+    161          }
+    162          
+    163          void go_ahead_on_cross_call_back()
+    164          {
+    165          	//update_point();
+    166          	//move_next_action = move_get_next_action();
+    167          	//control_set_action(move_next_action);
+    168          }
+    169          
+    170          void go_ahead_head_cross_call_back()
+    171          {
+    172          	update_point();
+    173          	move_next_action = move_get_next_action();
+    174          	if(move_next_action!=GO_AHEAD)
+    175          		control_set_action(GET_CROSS);
+    176          }
+    177          
+    178          
+    179          void stop_call_back()
+    180          {
+    181          	move_next_action = move_get_next_action();
+    182          	control_set_action(move_next_action);
+    183          }
+    184          
+    185          
+    186          void move_init()
+    187          {
+    188             control_set_call_back_function(GO_AHEAD,ON_CROSS,go_ahead_on_cross_call_back);
+    189             control_set_call_back_function(GO_AHEAD,HEAD_CROSS,go_ahead_head_cross_call_back);
+    190             control_set_call_back_function(GET_CROSS,FINISH,get_cross_call_back);
+    191             control_set_call_back_function(TURN_RIGHT,FINISH,turn_right_call_back);
+    192             control_set_call_back_function(TURN_LEFT,FINISH,turn_left_call_back);
+    193             control_set_call_back_function(TURN_BACK,FINISH,turn_back_call_back); 
+    194             control_set_call_back_function(STOP,FINISH,stop_call_back);
+    195          }
+    196          
+    197          
+    198          
+    199          <<<<<<< .mine
+    200          _Bool move_by_path(int length,int* path)
+    201          =======
+    202          
+    203          _Bool move_by_path(int length,int* path)
+    204          >>>>>>> .r18
+    205          {
+    206          
+    207          	// TODO : åŠ é”é˜²æ­¢è¢«æ‰“æ–­
+    208          	for(int i=0;i<length;i++)
+    209          	{
+    210          		move_path[i]=path[i];
+    211          		if(move_now_point==path[i])
+    212          		{
+    213          			move_now_point_path_index=i;
+    214          			if(i<length-1)move_next_point=path[i+1];
+    215          			else move_next_point=move_now_point;
+    216          			
+    217          		}
+    218          	}
+    219          	move_path_length=length;
+    220          	
+    221          }
+    222          
+    223          
+    224          
+    225          
+    226          
+    227          <<<<<<< .mine
+    228          
+    229          =======
+    230          >>>>>>> .r18
+
+Errors: 6
+Warnings: 5

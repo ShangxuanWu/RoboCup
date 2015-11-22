@@ -1,0 +1,151 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     30/Jul/2014  22:50:09 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\app\LPLD_Template.c                      #
+#    Command line =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\app\LPLD_Template.c -D IAR -D LPLD_K60   #
+#                    -lCN C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\p #
+#                    roject\robot_car_com\iar\FLASH\List\ -lB                 #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\ -o                       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\Obj\ --no_cse --no_unroll      #
+#                    --no_inline --no_code_motion --no_tbaa --no_clustering   #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config                              #
+#                    D:\IAR\arm\INC\c\DLib_Config_Normal.h -I                 #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\app\ -I                           #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\common\ -I              #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\cpu\ -I                 #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\cpu\headers\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\adc16\ -I       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\enet\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\lptmr\ -I       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\mcg\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\pmc\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\rtc\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\uart\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\wdog\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\platforms\ -I           #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\ -I                #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\FatFs\ -I          #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\USB\ -I            #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\iar_config_files\ -Ol   #
+#    List file    =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\LPLD_Template.lst         #
+#    Object file  =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\Obj\LPLD_Template.o            #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\project\robot_car_com\app\LPLD_Template.c
+      1          /*
+      2          * --------------"拉普兰德K60底层库"示例工程-----------------
+      3          *
+      4          * 测试硬件平台:  LPLD_K60 Card
+      5          * 版权所有:      北京拉普兰德电子技术有限公司
+      6          * 网络销售:      http://laplenden.taobao.com
+      7          * 公司门户:      http://www.lpld.cn
+      8          *
+      9          * 说明:    本工程基于"拉普兰德K60底层库"开发，
+     10          *          所有开源驱动代码均在"LPLD"文件夹下，调用说明见文档[#LPLD-003-N]
+     11          *
+     12          * 文件名:  LPLD_Template.c
+     13          * 用途:    Kinetis通用工程模板，用户可根据此模板工程新建自己的工程
+     14          *          本功能默认包含所有底层驱动，可以按需裁剪工程不需要的驱动，以减小生成文件
+     15          *
+     16          */
+     17          
+     18          //函数说明见function.h，变量说明见variable.h
+     19          #include "common.h"
+     20          #include "HAL_MCG.h"
+     21          #include "HAL_GPIO.h"
+     22          #include "HAL_PIT.h"
+     23          #include "HAL_FTM.h"
+     24          #include "HAL_LPTMR.h"
+     25          #include "HAL_UART.h"
+     26          
+     27          
+     28          
+     29          #include "control.h"
+     30          #include "motor.h"
+     31          #include "infrare.h"
+     32          #include "util.h"
+     33          #include "car.h"
+     34          <<<<<<< .mine
+     35          #include "move.h"
+     36          
+     37          
+     38          =======
+     39          #include "move.h"
+     40          >>>>>>> .r18
+     41          //声明中断函数
+     42          void init_all()
+     43          {
+     44            LPLD_GPIO_Init(PTB, 23, DIR_OUTPUT, OUTPUT_L, IRQC_DIS);
+     45            infrare_init();
+     46            motor_init();
+     47            car_init();
+     48          <<<<<<< .mine
+     49            move_init(); //应该在control_init前面执行
+     50            control_init();
+     51          =======
+     52          
+     53           control_init();
+     54             move_init();
+     55            
+     56          >>>>>>> .r18
+     57          }
+     58          
+     59          int path[20]={23,27,28,29,30,
+     60                        31,32,28,27,30,
+     61                        29,31,32,27,28,
+     62                        29,30,27,28,29};
+     63          
+     64          void main (void)
+     65          {
+     66            init_all();
+     67          <<<<<<< .mine
+     68            
+     69          =======
+     70            move_by_path(20,path);
+     71          //do_turn_left();
+     72          >>>>>>> .r18
+     73            while(1)
+     74            {
+     75          <<<<<<< .mine
+     76              
+     77          =======
+     78               
+     79          >>>>>>> .r18
+     80            }
+     81            
+     82           }
+     83          /********************************************************************/
+     84          
+
+Errors: 5
+Warnings: 6

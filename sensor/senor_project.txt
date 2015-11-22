@@ -1,0 +1,118 @@
+#include <EEPROM.h>
+#define ULTRASONIC_NUM 2
+#define SENSOR_INDEX_ADDRESS 0
+#define ALARM_DISTANCE_ADDRESS 1
+int echo[ULTRASONIC_NUM]={}; //
+int trig[ULTRASONIC_NUM]={}; //
+
+
+char sensor_index = 'A'; //传感器编号 'A'~'Z'
+
+int alarm_distance[ULTRASONIC_NUM]={}; //警报距离，当超声波检测到距离小于该值发出警报
+
+void load_config()
+{
+	sensor_index=EEPROM.read(SENSOR_INDEX_ADDRESS);
+	for(int i=0;i<ULTRASONIC_NUM;i++)
+	{
+		alarm_distance[i]=EEPROM.read()
+	}
+}
+
+
+void ultrasonic_init() //初始化超声波
+{
+	for(int i = 0; i < ULTRASONIC_NUM; i++)
+	{
+		pinMode(echo[i],INPUT);
+		pinMode(trig[i],OUTPUT);
+	}
+}
+
+int ultrasonic_get_distance(int i)//获取编号为i的超声波测到的距离
+{
+	digitalWrite(trig[i],LOW);
+	delayMicroseconds(2);
+	digitalWrite(trig[i],HIGH);
+	delayMicroseconds(10);
+	digitalWrite(trig[i],LOW);
+	int distance = pulseIn(echo[i],HIGH);
+	distance = distance/58;
+	return distance;
+}
+
+
+
+void send_alarm(int i) //发送警报格式为 '$'['A']['1']
+{
+	Serial.print('$');
+	Serial.print(sensor_index);
+	Serial.print(i);
+	Serial.flush(); //保证全部都发送出去
+}
+
+
+bool check_ultrasonic(int i)
+{
+	int temp_distance = ultrasonic_get_distance(i);
+	if(temp_distance>alarm_distance[i])
+	{	
+		return false;
+	}
+	else
+	{
+		send_alarm(i);
+	}
+}
+
+void setup()
+{
+	load_config();
+	Serial.begin(38400);
+}
+
+
+
+
+
+void loop()
+{
+	if(Serial.available()>0) //串口缓冲区接受到字符数目大于0
+	{
+		char mode = Serial.read();
+		swtich(mode)
+		{
+			case '@':
+				 int target_sensor=Serial.read();
+				 if(target_sensor<0) break; //没收到有效数据
+				 if(target_sensor==sensor_index)
+				 {
+					int new_senor_index = Serial.read();
+					if(new_senor_index<0)break;
+					if(new_senor_index>'Z' || new_senor_index<'A') break;
+					EEPROM.write(SENSOR_INDEX_ADDRESS,new_senor_index);
+				 }
+				break;
+			case '$':
+				break;
+			case '@':
+				int target_sensor = Serial.read();
+				if(target_sensor<0)break;
+				if(target_sensor==sensor_index)
+				{
+					int target_ultrasonic = Serial.read();
+					if(target_ultrasonic<0) break;
+					if(target_ultrasonic>'9'or target_ultrasonic<''
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	else
+	{
+		//TODO :是否需要延时，防止重复发送同一个信号？
+		if(check_ultrasonic(0))return; //如果该超声波前有敌人发送信号并退出循环
+		if(check_ultrasonic(1))return;
+	}
+}

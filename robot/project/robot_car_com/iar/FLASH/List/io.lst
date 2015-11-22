@@ -1,0 +1,137 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     06/Jul/2014  14:14:04 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  F:\robot _init\robot\lib\common\io.c                     #
+#    Command line =  "F:\robot _init\robot\lib\common\io.c" -D IAR -D         #
+#                    LPLD_K60 -lCN "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\FLASH\List\" -lB "F:\robot                         #
+#                    _init\robot\project\robot_car_com\iar\FLASH\List\" -o    #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\FLASH\Ob #
+#                    j\" --no_cse --no_unroll --no_inline --no_code_motion    #
+#                    --no_tbaa --no_clustering --no_scheduling --debug        #
+#                    --endian=little --cpu=Cortex-M4 -e --fpu=None            #
+#                    --dlib_config "D:\IAR Systems\Embedded Workbench         #
+#                    6.4\arm\INC\c\DLib_Config_Normal.h" -I "F:\robot         #
+#                    _init\robot\project\robot_car_com\iar\..\app\" -I        #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\..\..\.. #
+#                    \lib\common\" -I "F:\robot _init\robot\project\robot_car #
+#                    _com\iar\..\..\..\lib\cpu\" -I "F:\robot                 #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\cpu\h #
+#                    eaders\" -I "F:\robot _init\robot\project\robot_car_com\ #
+#                    iar\..\..\..\lib\drivers\adc16\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\enet\" -I "F:\robot _init\robot\project\robot_car_com #
+#                    \iar\..\..\..\lib\drivers\lptmr\" -I "F:\robot           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\mcg\" -I "F:\robot _init\robot\project\robot_car_com\ #
+#                    iar\..\..\..\lib\drivers\pmc\" -I "F:\robot              #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\rtc\" -I "F:\robot _init\robot\project\robot_car_com\ #
+#                    iar\..\..\..\lib\drivers\uart\" -I "F:\robot             #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\wdog\" -I "F:\robot _init\robot\project\robot_car_com #
+#                    \iar\..\..\..\lib\platforms\" -I "F:\robot               #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\LPLD\ #
+#                    " -I "F:\robot _init\robot\project\robot_car_com\iar\..\ #
+#                    ..\..\lib\LPLD\FatFs\" -I "F:\robot                      #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\LPLD\ #
+#                    USB\" -I "F:\robot _init\robot\project\robot_car_com\iar #
+#                    \..\..\..\lib\iar_config_files\" -Ol                     #
+#    List file    =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Lis #
+#                    t\io.lst                                                 #
+#    Object file  =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Obj #
+#                    \io.o                                                    #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\robot _init\robot\lib\common\io.c
+      1          /*
+      2           * File:		io.c
+      3           * Purpose:		Serial Input/Output routines
+      4           *
+      5           * Notes:       TERMINAL_PORT defined in <board>.h
+      6           */
+      7          
+      8          #include "common.h"
+      9          #include "uart.h"
+     10          
+     11          /********************************************************************/
+
+   \                                 In section .text, align 2, keep-with-next
+     12          char
+     13          in_char (void)
+     14          {
+   \                     in_char:
+   \   00000000   0xB580             PUSH     {R7,LR}
+     15          	return uart_getchar(TERM_PORT);
+   \   00000002   0x....             LDR.N    R0,??DataTable2  ;; 0x400eb000
+   \   00000004   0x.... 0x....      BL       uart_getchar
+   \   00000008   0xBD02             POP      {R1,PC}          ;; return
+     16          }
+     17          /********************************************************************/
+
+   \                                 In section .text, align 2, keep-with-next
+     18          void
+     19          out_char (char ch)
+     20          {
+   \                     out_char:
+   \   00000000   0xB580             PUSH     {R7,LR}
+     21          	uart_putchar(TERM_PORT, ch);
+   \   00000002   0x0001             MOVS     R1,R0
+   \   00000004   0xB2C9             UXTB     R1,R1            ;; ZeroExt  R1,R1,#+24,#+24
+   \   00000006   0x....             LDR.N    R0,??DataTable2  ;; 0x400eb000
+   \   00000008   0x.... 0x....      BL       uart_putchar
+     22          }
+   \   0000000C   0xBD01             POP      {R0,PC}          ;; return
+     23          /********************************************************************/
+
+   \                                 In section .text, align 2, keep-with-next
+     24          int
+     25          char_present (void)
+     26          {
+   \                     char_present:
+   \   00000000   0xB580             PUSH     {R7,LR}
+     27          	return uart_getchar_present(TERM_PORT);
+   \   00000002   0x....             LDR.N    R0,??DataTable2  ;; 0x400eb000
+   \   00000004   0x.... 0x....      BL       uart_getchar_present
+   \   00000008   0xBD02             POP      {R1,PC}          ;; return
+     28          }
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2:
+   \   00000000   0x400EB000         DC32     0x400eb000
+     29          /********************************************************************/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        8  char_present
+             8 -> uart_getchar_present
+        8  in_char
+             8 -> uart_getchar
+        8  out_char
+             8 -> uart_putchar
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable2
+      10  char_present
+      10  in_char
+      14  out_char
+
+ 
+ 38 bytes in section .text
+ 
+ 38 bytes of CODE memory
+
+Errors: none
+Warnings: none

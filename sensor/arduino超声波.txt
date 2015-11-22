@@ -1,0 +1,29 @@
+int inputPin=5;  // define ultrasonic signal receiver pin  ECHO to D4
+      int outputPin=6; // define ultrasonic signal transmitter pin  TRIG to D5
+      int ledpin=2;
+      void setup()
+      {
+        Serial.begin(9600);
+        pinMode(inputPin, INPUT);
+        pinMode(outputPin, OUTPUT);
+        pinMode(ledpin,OUTPUT);
+       }
+     void loop()
+    {
+        digitalWrite(outputPin, LOW);
+        delayMicroseconds(2);
+        digitalWrite(outputPin, HIGH); // Pulse for 10¦Ìs to trigger ultrasonic detection
+        delayMicroseconds(10);
+        digitalWrite(outputPin, LOW);  
+        int distance = pulseIn(inputPin, HIGH);  // Read receiver pulse time
+        distance= distance/58;   // Transform pulse time to distance
+        Serial.println(distance);   //Ourput distance                
+        delay(50);  
+        if(distance<30)
+        {
+          digitalWrite(ledpin, HIGH);
+          delay(100);
+          digitalWrite(ledpin, LOW);
+          delay(100);
+        }
+     }

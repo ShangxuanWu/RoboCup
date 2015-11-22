@@ -1,0 +1,319 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     06/Jul/2014  14:13:48 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  F:\robot _init\robot\project\robot_car_com\app\variable. #
+#                    c                                                        #
+#    Command line =  "F:\robot _init\robot\project\robot_car_com\app\variable #
+#                    .c" -D IAR -D LPLD_K60 -lCN "F:\robot                    #
+#                    _init\robot\project\robot_car_com\iar\FLASH\List\" -lB   #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\FLASH\Li #
+#                    st\" -o "F:\robot _init\robot\project\robot_car_com\iar\ #
+#                    FLASH\Obj\" --no_cse --no_unroll --no_inline             #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config "D:\IAR Systems\Embedded     #
+#                    Workbench 6.4\arm\INC\c\DLib_Config_Normal.h" -I         #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\..\app\" #
+#                     -I "F:\robot _init\robot\project\robot_car_com\iar\..\. #
+#                    .\..\lib\common\" -I "F:\robot                           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\cpu\" #
+#                     -I "F:\robot _init\robot\project\robot_car_com\iar\..\. #
+#                    .\..\lib\cpu\headers\" -I "F:\robot                      #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\adc16\" -I "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\..\..\..\lib\drivers\enet\" -I "F:\robot           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\lptmr\" -I "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\..\..\..\lib\drivers\mcg\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\pmc\" -I "F:\robot _init\robot\project\robot_car_com\ #
+#                    iar\..\..\..\lib\drivers\rtc\" -I "F:\robot              #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\uart\" -I "F:\robot _init\robot\project\robot_car_com #
+#                    \iar\..\..\..\lib\drivers\wdog\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\platf #
+#                    orms\" -I "F:\robot _init\robot\project\robot_car_com\ia #
+#                    r\..\..\..\lib\LPLD\" -I "F:\robot                       #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\LPLD\ #
+#                    FatFs\" -I "F:\robot _init\robot\project\robot_car_com\i #
+#                    ar\..\..\..\lib\LPLD\USB\" -I "F:\robot                  #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\iar_c #
+#                    onfig_files\" -Ol                                        #
+#    List file    =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Lis #
+#                    t\variable.lst                                           #
+#    Object file  =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Obj #
+#                    \variable.o                                              #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\robot _init\robot\project\robot_car_com\app\variable.c
+      1          #include "variable.h"
+      2          //硬件信息
+      3          //正跑 左pwm4=+ pwm5=0
+      4          //     右pwm6=0 pwm7=+
+      5          
+      6          //例程原有变量
+
+   \                                 In section .bss, align 4
+      7           unsigned char tmpUID[4] ={0,0,0,0};
+   \                     tmpUID:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 1
+      8           unsigned char resGetUID=0;
+   \                     resGetUID:
+   \   00000000                      DS8 1
+
+   \                                 In section .bss, align 4
+      9           unsigned char Card[4];
+   \                     Card:
+   \   00000000                      DS8 4
+     10          
+     11          //接收的信息
+
+   \                                 In section .bss, align 4
+     12           unsigned char r1[11],r2[7],r3[3],r4[3]; //r1前排红外 r2后排红外 r3左排红外 r4右排红外
+   \                     `r1`:
+   \   00000000                      DS8 12
+
+   \                                 In section .bss, align 4
+   \                     `r2`:
+   \   00000000                      DS8 8
+
+   \                                 In section .bss, align 4
+   \                     `r3`:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     `r4`:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 1
+     13           unsigned char keyCode;  //拨码开关值0-127
+   \                     keyCode:
+   \   00000000                      DS8 1
+
+   \                                 In section .bss, align 1
+     14           unsigned char cmd;  //从裁判接收的命令
+   \                     cmd:
+   \   00000000                      DS8 1
+     15          
+     16          //控制
+
+   \                                 In section .bss, align 1
+     17           unsigned char black_total1=0,black_total2=0;  //r1，r2黑点计数
+   \                     black_total1:
+   \   00000000                      DS8 1
+
+   \                                 In section .bss, align 1
+   \                     black_total2:
+   \   00000000                      DS8 1
+
+   \                                 In section .bss, align 4
+     18           int err1=0,err2=0,err1_use=0,err2_use=0;  //err1前排偏差，err2后排偏差，err1_use和err2_use为判断偏差合理后用作控制的偏差
+   \                     err1:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     err2:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     err1_use:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     err2_use:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 8
+     19           double v_output=0,v_offset=0; //电压值偏离标准量v_offset，电压值输出量v_output
+   \                     v_output:
+   \   00000000                      DS8 8
+
+   \                                 In section .bss, align 8
+   \                     v_offset:
+   \   00000000                      DS8 8
+
+   \                                 In section .data, align 4
+     20           int v_max=6500,v_maxone=0,v_getcorner=7000,turnleft_time_count=0,turnleft_time_set=70,turnright_time_count=0,turnright_time_set=70,motor_time_wait=0,motor_time_wait_set=30,turnaround_time_count=0,turnaround_time_set=140; //最大电压占空比  //6500能够刹住车
+   \                     v_max:
+   \   00000000   0x00001964         DC32 6500
+
+   \                                 In section .bss, align 4
+   \                     v_maxone:
+   \   00000000                      DS8 4
+
+   \                                 In section .data, align 4
+   \                     v_getcorner:
+   \   00000000   0x00001B58         DC32 7000
+
+   \                                 In section .bss, align 4
+   \                     turnleft_time_count:
+   \   00000000                      DS8 4
+
+   \                                 In section .data, align 4
+   \                     turnleft_time_set:
+   \   00000000   0x00000046         DC32 70
+
+   \                                 In section .bss, align 4
+   \                     turnright_time_count:
+   \   00000000                      DS8 4
+
+   \                                 In section .data, align 4
+   \                     turnright_time_set:
+   \   00000000   0x00000046         DC32 70
+
+   \                                 In section .bss, align 4
+   \                     motor_time_wait:
+   \   00000000                      DS8 4
+
+   \                                 In section .data, align 4
+   \                     motor_time_wait_set:
+   \   00000000   0x0000001E         DC32 30
+
+   \                                 In section .bss, align 4
+   \                     turnaround_time_count:
+   \   00000000                      DS8 4
+
+   \                                 In section .data, align 4
+   \                     turnaround_time_set:
+   \   00000000   0x0000008C         DC32 140
+     21           //double kp=1000;
+
+   \                                 In section .data, align 4
+     22           int weight[11]={-7,-5,-3,-2,-1,0,1,2,3,5,7};  //前排红外偏差权值
+   \                     weight:
+   \   00000000   0xFFFFFFF9         DC32 -7, -5, -3, -2, -1, 0, 1, 2, 3, 5, 7
+   \              0xFFFFFFFB   
+   \              0xFFFFFFFD   
+   \              0xFFFFFFFE   
+   \              0xFFFFFFFF   
+   \              0x00000000   
+   \              0x00000001   
+   \              0x00000002   
+   \              0x00000003   
+   \              0x00000005   
+   \              0x00000007   
+     23          
+
+   \                                 In section .bss, align 4
+     24           int pulsecount=0; //5ms脉冲数
+   \                     pulsecount:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+     25           unsigned int pulsetotal=0;  //总脉冲数
+   \                     pulsetotal:
+   \   00000000                      DS8 4
+     26          
+
+   \                                 In section .bss, align 4
+     27           char send_value[16]={0}; //zigbee发送数据(不使用)
+   \                     send_value:
+   \   00000000                      DS8 16
+     28          
+     29          ///////////////////////////////hao///////////////////////
+     30           //int rederror=0,rederror1=0,rederror2=0;//边沿跳变获得误差
+     31           //int red2error=0,red2error1=0,red2error2=0;//边沿跳变获得误差
+
+   \                                 In section .bss, align 4
+     32           int testvalue0=0,testvalue1=0,testvalue2=0,testvalue3=0,testvalue4=0,testvalue5=0,haoswitch=0,identityset=0,redatah=0;
+   \                     testvalue0:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     testvalue1:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     testvalue2:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     testvalue3:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     testvalue4:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     testvalue5:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     haoswitch:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     identityset:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+   \                     redatah:
+   \   00000000                      DS8 4
+     33          // int routechoice=0;
+     34          // int goahead_finish=0,goahead_distance_set=0,goahead_distance_count=0,getcorner_finish=0,robot_controlable=1,robot_controlable_downgrade=0,atcorner=0,turnleft_finish=0,turnright_finish=0,turnaround_finish=0,break_finish=0;
+     35          
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  Card
+       1  black_total1
+       1  black_total2
+       1  cmd
+       4  err1
+       4  err1_use
+       4  err2
+       4  err2_use
+       4  haoswitch
+       4  identityset
+       1  keyCode
+       4  motor_time_wait
+       4  motor_time_wait_set
+       4  pulsecount
+       4  pulsetotal
+      12  r1
+       8  r2
+       4  r3
+       4  r4
+       4  redatah
+       1  resGetUID
+      16  send_value
+       4  testvalue0
+       4  testvalue1
+       4  testvalue2
+       4  testvalue3
+       4  testvalue4
+       4  testvalue5
+       4  tmpUID
+       4  turnaround_time_count
+       4  turnaround_time_set
+       4  turnleft_time_count
+       4  turnleft_time_set
+       4  turnright_time_count
+       4  turnright_time_set
+       4  v_getcorner
+       4  v_max
+       4  v_maxone
+       8  v_offset
+       8  v_output
+      44  weight
+
+ 
+ 153 bytes in section .bss
+  68 bytes in section .data
+ 
+ 221 bytes of DATA memory
+
+Errors: none
+Warnings: none

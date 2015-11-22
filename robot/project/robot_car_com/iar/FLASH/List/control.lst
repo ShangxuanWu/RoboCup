@@ -1,0 +1,425 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     30/Jul/2014  22:50:08 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\app\control.c                            #
+#    Command line =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\app\control.c -D IAR -D LPLD_K60 -lCN    #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\ -lB                      #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\ -o                       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\Obj\ --no_cse --no_unroll      #
+#                    --no_inline --no_code_motion --no_tbaa --no_clustering   #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config                              #
+#                    D:\IAR\arm\INC\c\DLib_Config_Normal.h -I                 #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\app\ -I                           #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\common\ -I              #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\cpu\ -I                 #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\cpu\headers\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\adc16\ -I       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\enet\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\lptmr\ -I       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\mcg\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\pmc\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\rtc\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\uart\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\wdog\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\platforms\ -I           #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\ -I                #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\FatFs\ -I          #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\USB\ -I            #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\iar_config_files\ -Ol   #
+#    List file    =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\control.lst               #
+#    Object file  =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\Obj\control.o                  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\project\robot_car_com\app\control.c
+      1          #include "car.h"
+      2          #include "util.h"
+      3          #include "control.h"
+      4          #include "common.h"
+      5          #include "HAL_PIT.h"
+      6          #include "control.h"
+      7          int control_action=1; //当前执行的动作
+      8          
+      9          
+     10          #define FAST_TURN_SPEED 9000	//转弯时快速转动的速度
+     11          #define FAST_TURN_TIME 	10	//快速转动的时间
+     12          #define SLOW_TURN_SPEED 5000	//低速转动的速度
+     13          #define GET_CROSS_SPEED 3000 //抓角时的速度
+     14          #define MAX_SPEED 8000 //直走的最大速度
+     15          
+     16          #define CALL_BACK(action,even)  if(control_call_back_function[action][even]!=NULL)control_call_back_function[action][even]();
+     17          
+     18          
+     19          //拓展car中的car_*_infrare 指针
+     20          extern unsigned char *car_front_infrare;
+     21          extern unsigned char *car_left_infrare;
+     22          extern unsigned char *car_right_infrare;
+     23          extern unsigned char *car_tail_infrare;
+     24          
+     25          
+     26          
+     27          <<<<<<< .mine
+     28          void (*control_call_back_function[CONTROL_ACTION_NUM][EVEN_NUM])(); 
+     29          =======
+     30          void (* control_call_back_function[CONTROL_ACTION_NUM][EVEN_NUM])(); 
+     31          >>>>>>> .r18
+     32          
+     33          
+     34          _Bool can_interrupt=1; //表示车子的当前进行的动作可否被打断 1表示可以 0 表示不可
+     35          
+     36          int go_ahead_time=0; //go_ahead 执行的时间
+     37          
+     38          float P=5;		//快
+     39          float I=2.5;	//准   大于3不抖
+     40          float D=0;		//狠
+     41          
+     42          int UK=0;
+     43          int B;
+     44          
+     45          
+     46          _Bool bad_infrare[11];
+     47          
+     48          
+     49          _Bool control_set_action(int action);
+     50          void control_init();
+     51          
+     52          void do_go_ahead();
+     53          void do_turn_right();
+     54          void do_turn_left();
+     55          void do_stop();
+     56          void do_get_cross();
+     57          void do_turn_back();
+     58          void do_control(); //控制程序每20ms运行一次
+     59          
+     60          
+     61          
+     62          
+     63          _Bool check_head_cross()// 前排红外检测到分岔路口
+     64          {
+     65          
+     66              //if() //如果最外侧的两个红外都检测到黑线则认为到分叉路口
+     67             
+     68          
+     69            int count=0;
+     70            for(int i=0;i<11;i++)
+     71            {
+     72              count+=car_front_infrare[i];
+     73            }
+     74            if(count>=7&&(car_front_infrare[0]&&car_front_infrare[1]&&car_front_infrare[2])
+     75               ||(car_front_infrare[8]&&car_front_infrare[9]&&car_front_infrare[10])) 
+     76              return true;
+     77            else return false;
+     78          
+     79          }
+     80          
+     81          _Bool check_on_cross()//两侧红外检测到分叉路口
+     82          {
+     83          	if(car_left_infrare[1]==1||car_right_infrare[1]==1)
+     84          	{
+     85          		return true;
+     86          	}
+     87          	else
+     88          	{
+     89          		return false;
+     90          	}
+     91          }
+     92          
+     93          void do_control()
+     94          {
+     95                   
+     96          	switch(control_action)
+     97          	{
+     98                  case TURN_LEFT:
+     99          			do_turn_left();
+    100                      break;
+    101          		case TURN_RIGHT:
+    102          			do_turn_right();
+    103                      break;
+    104          		case TURN_BACK:
+    105          			do_turn_back();
+    106                      break;
+    107          		case GO_AHEAD:
+    108          			do_go_ahead();
+    109                      break;
+    110                  case STOP:
+    111          			do_stop();
+    112                      break;
+    113          		case GET_CROSS:
+    114          			do_get_cross();
+    115                                  break;
+    116          		default:
+    117          			do_stop();
+    118                      break;
+    119          	}
+    120          	
+    121          	#ifdef STOP_DEBUG
+    122          	car_set_left_speed(0);
+    123          	car_set_right_speed(0);
+    124          	#endif
+    125          }
+    126          int error=0;
+    127          int last_error=0;
+    128          int last_two_error=0;
+    129          //const  int weight[11]={12,10,7,1,1,0,-1,-1,-7,-10,-12};
+    130          const  int weight[11]={-1000,-300,-150,-60,-50,0,50,60,100,300,1000};
+    131          
+    132          int black_line_pos;
+    133          int eb_left=0; //黑线左边缘
+    134          int eb_right=11; //黑线右边缘
+    135          int calculate_infrare_error()
+    136          {
+    137          	
+    138          	
+    139              int r_size=11;
+    140              int error_temp=0;
+    141              int count=0;
+    142              
+    143          	for(int i=0;i<r_size;i++)
+    144          	{
+    145                      if(car_front_infrare[i]==1)
+    146                      {
+    147                        count++;
+    148                      }            
+    149          	}	  
+    150                  
+    151                  for(int i=1; i<10; i++)
+    152                  {
+    153                     if(car_front_infrare[i]==1&&car_front_infrare[i-1]==0) eb_left=i;
+    154                     if(car_front_infrare[i]==1&&car_front_infrare[i+1]==0) eb_right=i;
+    155                  }
+    156          	
+    157          	if(count>=5) //黑线
+    158          	{
+    159          		
+    160          	}
+    161          	
+    162                   black_line_pos = (eb_right-eb_left)/2+eb_left;
+    163                  error_temp=weight[black_line_pos];
+    164                  error=(int)P*(error_temp-last_error)+I*error_temp+D*(error_temp-2*last_error+last_two_error);    
+    165          	last_two_error=last_error;
+    166          	last_error=error;
+    167                  error=error_temp;
+    168                  return error;
+    169          }
+    170          
+    171          
+    172          void do_turn_back()
+    173          {
+    174          	car_set_left_speed(0);
+    175          	car_set_left_speed(0);
+    176          	delayMs(100);
+    177          	car_change_direction();
+    178          	CALL_BACK(TURN_BACK,FINISH);
+    179          }
+    180          int U=0;
+    181          int e=0;
+    182          
+    183          
+    184          void do_go_ahead()
+    185          {      
+    186                  go_ahead_time++; //在do_control中清零
+    187          	can_interrupt=true;
+    188          	
+    189                  if(check_head_cross()&&go_ahead_time>5)
+    190                  {
+    191                      CALL_BACK(GO_AHEAD,HEAD_CROSS);
+    192                      go_ahead_time=0;//防止多次进去check_head_cross
+    193                   }   
+    194          
+    195                  if(check_on_cross()&&go_ahead_time<10)CALL_BACK(GO_AHEAD,ON_CROSS);
+    196          	e=calculate_infrare_error();
+    197          	if(e<0)//turn left    Problem!!!!
+    198          	{
+    199                  U=MAX_SPEED;
+    200                  U=U+e*80;
+    201                  if(U<100)U=100;
+    202          		car_set_left_speed(U);
+    203          		car_set_right_speed(MAX_SPEED);
+    204          	}
+    205          	else //if(e>0)  turn right
+    206          	{
+    207                  U=MAX_SPEED;
+    208                  U=U-e*80;
+    209                  if(U<100)U=100;
+    210          	    car_set_left_speed(MAX_SPEED);
+    211          		car_set_right_speed(U);
+    212          	}
+    213          }
+    214          
+    215          void do_get_cross()//直走遇到分岔路口停下
+    216          {
+    217          	e=calculate_infrare_error();
+    218          	can_interrupt=false;
+    219          	if(check_on_cross())
+    220          	{
+    221          		car_set_left_speed(0);
+    222          		car_set_right_speed(0);
+    223          		delayMs(1000);
+    224          		can_interrupt= true;
+    225          		CALL_BACK(GET_CROSS,FINISH);
+    226          		return;
+    227          	}
+    228          	if(e<0)//turn left   
+    229          	{
+    230                  U=GET_CROSS_SPEED;
+    231                  U=U+e*300;
+    232                  car_set_left_speed(U);
+    233          		car_set_right_speed(GET_CROSS_SPEED);
+    234          	}
+    235          	else //if(e>0)  turn right
+    236          	{
+    237                  U=GET_CROSS_SPEED;
+    238                  U=U-e*300;
+    239          	    car_set_left_speed(GET_CROSS_SPEED);
+    240          		car_set_right_speed(U);
+    241          	}
+    242          }
+    243          
+    244          
+    245          void do_turn_left()
+    246          {
+    247            //模拟快速转出一定距离
+    248            if(can_interrupt)can_interrupt=false;
+    249            static int turn_left_time=0;
+    250            if(turn_left_time<FAST_TURN_TIME)
+    251            {
+    252          	car_set_left_speed(-FAST_TURN_SPEED);
+    253          	car_set_right_speed(FAST_TURN_SPEED);
+    254          	turn_left_time++;
+    255            }
+    256            else{
+    257             car_set_left_speed(-SLOW_TURN_SPEED);
+    258             car_set_right_speed(SLOW_TURN_SPEED);
+    259             if(check_on_cross())
+    260             {
+    261                  car_set_left_speed(0);
+    262          		car_set_right_speed(0);
+    263                  delayMs(100);
+    264          		control_action = STOP;
+    265          		can_interrupt=true;
+    266                  turn_left_time = 0;
+    267          		CALL_BACK(TURN_LEFT,FINISH);
+    268             }
+    269            }
+    270          }
+    271          
+    272          void do_turn_right()
+    273          {
+    274            if(can_interrupt)can_interrupt=false;
+    275            static int turn_right_time = 0;
+    276            if(turn_right_time<FAST_TURN_TIME)
+    277            {
+    278          	car_set_left_speed(FAST_TURN_SPEED);
+    279          	car_set_right_speed(-FAST_TURN_SPEED);
+    280          	turn_right_time++;
+    281            }
+    282            else
+    283            {
+    284          	car_set_left_speed(SLOW_TURN_SPEED);
+    285          	car_set_right_speed(-SLOW_TURN_SPEED);
+    286          	if(check_on_cross())
+    287              {
+    288                  car_set_left_speed(0);
+    289                  car_set_right_speed(0);
+    290                  control_action = STOP;
+    291                  delayMs(100);
+    292                  can_interrupt = true;
+    293                  turn_right_time=0;
+    294          		CALL_BACK(TURN_RIGHT,FINISH);
+    295              }
+    296            }
+    297          }
+    298          
+    299          void do_stop()
+    300          {
+    301          	can_interrupt = true;
+    302          	car_set_left_speed(0);
+    303          	car_set_right_speed(0);
+    304                  CALL_BACK(STOP,FINISH);
+    305          	delayMs(100);
+    306          }
+    307          
+    308          
+    309          void control_init()  //初始化方向，速度和传感器映射顺序
+    310          {
+    311                LPLD_PIT_Init(PIT0,20000,do_control); //设置20ms中断，每20ms控制一次电机
+    312          	  for(int i=0; i<EVEN_NUM; i++)
+    313          	  {
+    314          		for(int j=0; j<CONTROL_ACTION_NUM; j++)
+    315          		{
+    316          			control_call_back_function[j][i]=NULL;
+    317          		}
+    318          	  }
+    319                  //for(int i=0;i<10;i++) bad_infrare[i]=0;  //标记损坏的红外，暂不用
+    320                //  bad_infrare[5]=1;
+    321          }
+    322          
+    323          _Bool control_stop()
+    324          {
+    325          	return control_set_action(STOP);
+    326          }
+    327          
+    328          _Bool control_turn_right()
+    329          {
+    330              return control_set_action(TURN_RIGHT);
+    331          }
+    332          
+    333          _Bool control_turn_left()
+    334          {
+    335          	return control_set_action(TURN_LEFT);
+    336          }
+    337          
+    338          _Bool control_turn_back()
+    339          {
+    340              return control_set_action(TURN_BACK);
+    341          }
+    342          
+    343          _Bool control_go_ahead()
+    344          {
+    345            return control_set_action(GO_AHEAD);
+    346          }
+    347          
+    348          _Bool control_set_action(int action)
+    349          {
+    350              if(!can_interrupt)return false;
+    351              control_action = action;
+    352              return true;
+    353          }
+    354          
+    355          void control_set_call_back_function(int action, int even, void(* fun)())
+    356          {
+    357          	if(fun)control_call_back_function[action][even]=fun;
+    358          }
+
+Errors: 20
+Warnings: 2

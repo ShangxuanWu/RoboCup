@@ -1,0 +1,168 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     06/Jul/2014  17:01:59 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  F:\robot _init\robot\project\robot_car_com\app\defend.c  #
+#    Command line =  "F:\robot _init\robot\project\robot_car_com\app\defend.c #
+#                    " -D IAR -D LPLD_K60 -lCN "F:\robot                      #
+#                    _init\robot\project\robot_car_com\iar\FLASH\List\" -lB   #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\FLASH\Li #
+#                    st\" -o "F:\robot _init\robot\project\robot_car_com\iar\ #
+#                    FLASH\Obj\" --no_cse --no_unroll --no_inline             #
+#                    --no_code_motion --no_tbaa --no_clustering               #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config "D:\IAR Systems\Embedded     #
+#                    Workbench 6.4\arm\INC\c\DLib_Config_Normal.h" -I         #
+#                    "F:\robot _init\robot\project\robot_car_com\iar\..\app\" #
+#                     -I "F:\robot _init\robot\project\robot_car_com\iar\..\. #
+#                    .\..\lib\common\" -I "F:\robot                           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\cpu\" #
+#                     -I "F:\robot _init\robot\project\robot_car_com\iar\..\. #
+#                    .\..\lib\cpu\headers\" -I "F:\robot                      #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\adc16\" -I "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\..\..\..\lib\drivers\enet\" -I "F:\robot           #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\lptmr\" -I "F:\robot _init\robot\project\robot_car_co #
+#                    m\iar\..\..\..\lib\drivers\mcg\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\pmc\" -I "F:\robot _init\robot\project\robot_car_com\ #
+#                    iar\..\..\..\lib\drivers\rtc\" -I "F:\robot              #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\drive #
+#                    rs\uart\" -I "F:\robot _init\robot\project\robot_car_com #
+#                    \iar\..\..\..\lib\drivers\wdog\" -I "F:\robot            #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\platf #
+#                    orms\" -I "F:\robot _init\robot\project\robot_car_com\ia #
+#                    r\..\..\..\lib\LPLD\" -I "F:\robot                       #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\LPLD\ #
+#                    FatFs\" -I "F:\robot _init\robot\project\robot_car_com\i #
+#                    ar\..\..\..\lib\LPLD\USB\" -I "F:\robot                  #
+#                    _init\robot\project\robot_car_com\iar\..\..\..\lib\iar_c #
+#                    onfig_files\" -Ol                                        #
+#    List file    =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Lis #
+#                    t\defend.lst                                             #
+#    Object file  =  F:\robot _init\robot\project\robot_car_com\iar\FLASH\Obj #
+#                    \defend.o                                                #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+F:\robot _init\robot\project\robot_car_com\app\defend.c
+      1          
+      2          #include "utils.h"
+      3          
+      4          #include "graph.h"
+      5          
+      6          static enum DIRECTION head_direction = D_NORTH;
+      7          static uint8 field_sensors[10] = {0};
+      8          static struct Point cur_pnt = {0, 0};
+      9          static struct Point dest_pnt = {0, 0};
+     10          static enum DEFEND_TYPE defend_type = DEFEND_STOP;
+     11          static _Bool can_interrupt = 0;
+     12          
+     13          CONTROL_CALLBACK_FUNC(defend_turn_callback, cmd, ev) {
+     14          	if (ev == E_FINISHED) {
+     15          		head_direction = get_next_direction(cmd, head_direction);
+     16          		control_clear_distance();
+     17          	}
+     18          }
+     19          
+     20          static _Bool wait_for_corner = 0;
+     21          CONTROL_CALLBACK_FUNC(defend_ahead_callback, cmd, ev) {
+     22          	if (ev == E_CROSS) {
+     23          		wait_for_corner = 1;
+     24          	}
+     25          	else if (ev == E_ONCROSS && wait_for_corner) {
+     26          		wait_for_corner = 0;
+     27          		control_clear_distance();
+     28          	}
+     29          }
+     30          
+     31          CONTROL_CALLBACK_FUNC(defend_getcorner_callback, cmd, ev) {
+     32          	if (ev == E_FINISHED) {
+     33          		control_clear_distance();
+     34          	}
+     35          }
+     36          
+     37          void defend_init(void) {
+     38          	control_set_callback(C_AHEAD, defend_ahead_callback);
+     39          	control_set_callback(C_GETCORNER, defend_getcorner_callback);
+     40          	control_set_callback(C_LEFT, defend_turn_callback);
+     41          	control_set_callback(C_RIGHT, defend_turn_callback);
+     42          	control_set_callback(C_AROUND, defend_turn_callback);
+     43          	
+     44          	defend_type = DEFEND_STOP;
+     45          	can_interrupt = 1;
+     46          }
+     47          
+     48          static int path[GRAPH_POINT_NUM], path_size, dest_pnt_num, cur_pnt_num;
+     49          void defend_run(void) {
+     50          	while (1) {
+     51          		get_field_sensors(field_sensors);
+     52          		
+     53          		switch (defend_type) {
+     54          			case DEFEND_INIT:
+     55          				dest_pnt.x = 3;
+     56          				dest_pnt.y = 0;
+     57          				break;
+     58          			case DEFEND_PATROL_1_2:
+     59          				if (cur_pnt.x == 2 && cur_pnt.y == 0) {
+     60          					dest_pnt.x = 1;
+     61          					dest_pnt.y = 0;
+     62          				}
+     63          				else {
+     64          					dest_pnt.x = 2;
+     65          					dest_pnt.y = 0;
+     66          				}
+     67          				break;
+     68          			case DEFEND_PATROL_2_3:
+     69          				if (cur_pnt.x == 2 && cur_pnt.y == 0) {
+     70          					dest_pnt.x = 3;
+     71          					dest_pnt.y = 0;
+     72          				}
+     73          				else {
+     74          					dest_pnt.x = 2;
+     75          					dest_pnt.y = 0;
+     76          				}
+     77          				break;
+     78          			case DEFEND_TO_1:
+     79          				dest_pnt.x = 1;
+     80          				dest_pnt.y = 0;
+     81          				break;
+     82          			case DEFEND_TO_2:
+     83          				dest_pnt.x = 2;
+     84          				dest_pnt.y = 0;
+     85          				break;
+     86          			case DEFEND_TO_3:
+     87          				dest_pnt.x = 3;
+     88          				dest_pnt.y = 0;
+     89          				break;
+     90          			case DEFEND_TO_CENTER:
+     91          				dest_pnt.x = 2;
+     92          				dest_pnt.y = 2;
+     93          				break;
+     94          			default:
+     95          				dest_pnt = cur_pnt;
+     96          		}
+     97          		
+     98          		dest_pnt_num = graph_get_point_number(dest_pnt);
+     99          		cur_pnt_num = graph_get_point_number(cur_pnt);
+    100          		graph_spfa(cur_pnt_num, dest_pnt_num, path, &path_size);
+    101          		
+    102          		if (path_size <= 1) {
+    103          			
+    104          			if (!execute_command(C_STOP)) {
+    105          				can_interrupt = 1;
+    106          			}
+    107          		}
+    108          		else {
+    109          			
+    110          		}
+    111          	}
+    112          }
+
+Errors: 28
+Warnings: 16

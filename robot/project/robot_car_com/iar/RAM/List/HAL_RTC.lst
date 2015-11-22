@@ -1,0 +1,456 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.1.53127/W32 for ARM     25/Sep/2013  21:07:06 #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\中国机器人大赛\robot_project\lib\LPLD\HAL_RTC.c       #
+#    Command line =  D:\中国机器人大赛\robot_project\lib\LPLD\HAL_RTC.c -D    #
+#                    IAR -D LPLD_K60 -lCN D:\中国机器人大赛\robot_project\pro #
+#                    ject\LPLD_Template\iar\RAM\List\ -lB                     #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\RAM\List\ -o D:\中国机器人大赛\robot_project\project\L #
+#                    PLD_Template\iar\RAM\Obj\ --no_cse --no_unroll           #
+#                    --no_inline --no_code_motion --no_tbaa --no_clustering   #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config "D:\Program Files\IAR        #
+#                    Systems\Embedded Workbench 6.0\arm\INC\c\DLib_Config_Nor #
+#                    mal.h" -I D:\中国机器人大赛\robot_project\project\LPLD_T #
+#                    emplate\iar\..\app\ -I D:\中国机器人大赛\robot_project\p #
+#                    roject\LPLD_Template\iar\..\..\..\lib\common\ -I         #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\cpu\ -I D:\中国机器人大赛\robot_project\p #
+#                    roject\LPLD_Template\iar\..\..\..\lib\cpu\headers\ -I    #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\adc16\ -I                         #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\enet\ -I                          #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\lptmr\ -I                         #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\mcg\ -I                           #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\pmc\ -I                           #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\rtc\ -I                           #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\uart\ -I                          #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\wdog\ -I                          #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\platforms\ -I                             #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\LPLD\ -I D:\中国机器人大赛\robot_project\ #
+#                    project\LPLD_Template\iar\..\..\..\lib\LPLD\FatFs\ -I    #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\LPLD\USB\ -I                              #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\iar_config_files\ -Ol                     #
+#    List file    =  D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\RAM\List\HAL_RTC.lst                                   #
+#    Object file  =  D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\RAM\Obj\HAL_RTC.o                                      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\中国机器人大赛\robot_project\lib\LPLD\HAL_RTC.c
+      1          /*
+      2           * --------------"拉普兰德K60底层库"-----------------
+      3           *
+      4           * 测试硬件平台:LPLD_K60 Card
+      5           * 版权所有:北京拉普兰德电子技术有限公司
+      6           * 网络销售:http://laplenden.taobao.com
+      7           * 公司门户:http://www.lpld.cn
+      8           *
+      9           * 文件名: HAL_RTC.c
+     10           * 用途: RTCC底层模块相关函数
+     11           * 最后修改日期: 20120626
+     12           *
+     13           * 开发者使用协议:
+     14           *  本代码面向所有使用者开放源代码，开发者可以随意修改源代码。但本段及以上注释应
+     15           *  予以保留，不得更改或删除原版权所有者姓名。二次开发者可以加注二次版权所有者，
+     16           *  但应在遵守此协议的基础上，开放源代码、不得出售代码本身。
+     17           */
+     18          #include "common.h"
+     19          #include "HAL_RTC.h"
+     20          
+     21          /*
+     22           *******需用到定时中断，请在isr.h中粘贴一下代码:*********
+     23          
+     24          //RTC模块中断服务定义
+     25          #undef  VECTOR_082
+     26          #define VECTOR_082 LPLD_RTC_Isr
+     27          
+     28          //以下函数在LPLD_Kinetis底层包，不必修改
+     29          extern void LPLD_RTC_Isr(void);
+     30          
+     31           ***********************代码结束*************************
+     32          */
+     33          
+     34          //用户自定义中断服务函数数组
+
+   \                                 In section .bss, align 4
+     35          RTC_ISR_CALLBACK RTC_ISR[1];
+   \                     RTC_ISR:
+   \   00000000                      DS8 4
+     36          
+     37          
+     38          /*
+     39           * LPLD_RTC_Init
+     40           * RTC通用初始化函数
+     41           * 
+     42           * 参数:
+     43           *    seconds--设置计数器起始值
+     44           *      |__如果计数器设置为0，在不复位的情况下可计数2的32次方秒，约136年
+     45           *    alarm--设置报警值，
+     46           *      |__当报警值等于RTC_TSR，设置TAF标志位，可触发中断
+     47           *    rtc_irqc--中断模式
+     48           *      |__RTC_INT_DIS        -关闭RTC中断
+     49           *      |__RTC_INT_INVALID    -开启RTC 无效数据 标志位中断
+     50           *      |__RTC_INT_OVERFLOW   -开启RTC 计数器溢出 标志位中断
+     51           *      |__RTC_INT_ALARM      -开启RTC 报警 标志位中断
+     52           *    isr_func--用户中断程序入口地址
+     53           *      |__用户在工程文件下定义的中断函数名，函数必须为:无返回值,无参数(eg. void isr(void);)
+     54           *
+     55           * 输出:
+     56           *    0--配置错误
+     57           *    1--配置成功
+     58           */
+     59          
+
+   \                                 In section .text, align 2, keep-with-next
+     60          uint8 LPLD_RTC_Init(uint32 seconds, uint32 alarm, uint8 rtc_irqc, RTC_ISR_CALLBACK isr_func)
+     61          {
+   \                     LPLD_RTC_Init:
+   \   00000000   0xB538             PUSH     {R3-R5,LR}
+   \   00000002   0x0004             MOVS     R4,R0
+   \   00000004   0x000D             MOVS     R5,R1
+     62            int i;
+     63            
+     64            SIM_SCGC6 |= SIM_SCGC6_RTC_MASK;
+   \   00000006   0x....             LDR.N    R0,??DataTable5  ;; 0x4004803c
+   \   00000008   0x6800             LDR      R0,[R0, #+0]
+   \   0000000A   0xF050 0x5000      ORRS     R0,R0,#0x20000000
+   \   0000000E   0x....             LDR.N    R1,??DataTable5  ;; 0x4004803c
+   \   00000010   0x6008             STR      R0,[R1, #+0]
+     65            //复位所有RTC寄存器 除了SWR位 RTC_WAR和RTC_RAR寄存器
+     66            //清除SWR位在VBAT POR设置之后或者软件复位
+     67            //复位RTC寄存器
+     68            RTC_CR  = RTC_CR_SWR_MASK; 
+   \   00000012   0x....             LDR.N    R0,??DataTable5_1  ;; 0x4003d010
+   \   00000014   0x2101             MOVS     R1,#+1
+   \   00000016   0x6001             STR      R1,[R0, #+0]
+     69            //清除RTC复位标志   
+     70            RTC_CR  &= ~RTC_CR_SWR_MASK;  
+   \   00000018   0x....             LDR.N    R0,??DataTable5_1  ;; 0x4003d010
+   \   0000001A   0x6800             LDR      R0,[R0, #+0]
+   \   0000001C   0x0840             LSRS     R0,R0,#+1
+   \   0000001E   0x0040             LSLS     R0,R0,#+1
+   \   00000020   0x....             LDR.N    R1,??DataTable5_1  ;; 0x4003d010
+   \   00000022   0x6008             STR      R0,[R1, #+0]
+     71            //使能RTC 32.768 kHzRTC时钟源
+     72            //使能之后要延时一段时间等待
+     73            //等待时钟稳定后在配置RTC时钟计数器.
+     74            RTC_CR |= RTC_CR_OSCE_MASK;
+   \   00000024   0x....             LDR.N    R0,??DataTable5_1  ;; 0x4003d010
+   \   00000026   0x6800             LDR      R0,[R0, #+0]
+   \   00000028   0xF44F 0x7180      MOV      R1,#+256
+   \   0000002C   0x4308             ORRS     R0,R1,R0
+   \   0000002E   0x....             LDR.N    R1,??DataTable5_1  ;; 0x4003d010
+   \   00000030   0x6008             STR      R0,[R1, #+0]
+     75            
+     76            //等待32.768时钟起振
+     77            for(i=0;i<0x600000;i++);
+   \   00000032   0x2000             MOVS     R0,#+0
+   \   00000034   0xE000             B.N      ??LPLD_RTC_Init_0
+   \                     ??LPLD_RTC_Init_1:
+   \   00000036   0x1C40             ADDS     R0,R0,#+1
+   \                     ??LPLD_RTC_Init_0:
+   \   00000038   0xF5B0 0x0FC0      CMP      R0,#+6291456
+   \   0000003C   0xDBFB             BLT.N    ??LPLD_RTC_Init_1
+     78            
+     79            if(rtc_irqc)
+   \   0000003E   0xB2D2             UXTB     R2,R2            ;; ZeroExt  R2,R2,#+24,#+24
+   \   00000040   0x2A00             CMP      R2,#+0
+   \   00000042   0xD009             BEQ.N    ??LPLD_RTC_Init_2
+     80            {
+     81              RTC_IER = (rtc_irqc & 0x07);
+   \   00000044   0xB2D2             UXTB     R2,R2            ;; ZeroExt  R2,R2,#+24,#+24
+   \   00000046   0xF012 0x0007      ANDS     R0,R2,#0x7
+   \   0000004A   0x....             LDR.N    R1,??DataTable5_2  ;; 0x4003d01c
+   \   0000004C   0x6008             STR      R0,[R1, #+0]
+     82              
+     83              RTC_ISR[0]=isr_func;
+   \   0000004E   0x....             LDR.N    R0,??DataTable5_3
+   \   00000050   0x6003             STR      R3,[R0, #+0]
+     84              
+     85              enable_irq(66);//开启RTC中断
+   \   00000052   0x2042             MOVS     R0,#+66
+   \   00000054   0x.... 0x....      BL       enable_irq
+     86            }
+     87            //设置时钟补偿寄存器
+     88            RTC_TCR = RTC_TCR_CIR(0) | RTC_TCR_TCR(0);
+   \                     ??LPLD_RTC_Init_2:
+   \   00000058   0x....             LDR.N    R0,??DataTable5_4  ;; 0x4003d00c
+   \   0000005A   0x2100             MOVS     R1,#+0
+   \   0000005C   0x6001             STR      R1,[R0, #+0]
+     89            
+     90            //配置秒计数器
+     91            RTC_TSR = seconds;
+   \   0000005E   0x....             LDR.N    R0,??DataTable5_5  ;; 0x4003d000
+   \   00000060   0x6004             STR      R4,[R0, #+0]
+     92              
+     93            //配置闹铃  
+     94            RTC_TAR = alarm;
+   \   00000062   0x....             LDR.N    R0,??DataTable5_6  ;; 0x4003d008
+   \   00000064   0x6005             STR      R5,[R0, #+0]
+     95            
+     96            //使能秒计数器
+     97            RTC_SR |= RTC_SR_TCE_MASK;
+   \   00000066   0x....             LDR.N    R0,??DataTable5_7  ;; 0x4003d014
+   \   00000068   0x6800             LDR      R0,[R0, #+0]
+   \   0000006A   0xF050 0x0010      ORRS     R0,R0,#0x10
+   \   0000006E   0x....             LDR.N    R1,??DataTable5_7  ;; 0x4003d014
+   \   00000070   0x6008             STR      R0,[R1, #+0]
+     98            
+     99            return 1;
+   \   00000072   0x2001             MOVS     R0,#+1
+   \   00000074   0xBD32             POP      {R1,R4,R5,PC}    ;; return
+    100          }
+    101          
+    102          /*
+    103           * LPLD_Get_RealTime
+    104           * 获得RTC秒计数器的值
+    105           * 
+    106           * 输出
+    107           *   秒累加的总和
+    108           */
+
+   \                                 In section .text, align 2, keep-with-next
+    109          uint32 LPLD_RTC_GetRealTime(void)
+    110          {
+    111            return RTC_TSR;//获得当前的秒累加的总和
+   \                     LPLD_RTC_GetRealTime:
+   \   00000000   0x....             LDR.N    R0,??DataTable5_5  ;; 0x4003d000
+   \   00000002   0x6800             LDR      R0,[R0, #+0]
+   \   00000004   0x4770             BX       LR               ;; return
+    112          }
+    113          
+    114          /*
+    115           * LPLD_RTC_Stop
+    116           * 关闭RTC函数
+    117           * 
+    118           * 输出
+    119           *   无
+    120           */
+
+   \                                 In section .text, align 2, keep-with-next
+    121          void LPLD_RTC_Stop(void)
+    122          {
+    123            RTC_SR &= (~RTC_SR_TCE_MASK);
+   \                     LPLD_RTC_Stop:
+   \   00000000   0x....             LDR.N    R0,??DataTable5_7  ;; 0x4003d014
+   \   00000002   0x6800             LDR      R0,[R0, #+0]
+   \   00000004   0xF030 0x0010      BICS     R0,R0,#0x10
+   \   00000008   0x....             LDR.N    R1,??DataTable5_7  ;; 0x4003d014
+   \   0000000A   0x6008             STR      R0,[R1, #+0]
+    124          }
+   \   0000000C   0x4770             BX       LR               ;; return
+    125          
+    126          /*
+    127           * LPLD_RTC_Alarm
+    128           * RTC重新设置报警寄存器
+    129           * 
+    130           * 参数:
+    131           *    data--设置报警的时间，单位：秒
+    132           * 
+    133           * 输出
+    134           *   无
+    135           */
+
+   \                                 In section .text, align 2, keep-with-next
+    136          void LPLD_RTC_Alarm(uint32 data)
+    137          {
+    138            RTC_TAR = data;
+   \                     LPLD_RTC_Alarm:
+   \   00000000   0x....             LDR.N    R1,??DataTable5_6  ;; 0x4003d008
+   \   00000002   0x6008             STR      R0,[R1, #+0]
+    139          }
+   \   00000004   0x4770             BX       LR               ;; return
+    140          
+    141          /*
+    142           * LPLD_RTC_Alarm
+    143           * RTC重新设置秒计数器
+    144           * 
+    145           * 参数:
+    146           *    data--设置报警的时间，单位：秒
+    147           * 
+    148           * 输出
+    149           *   无
+    150           */
+
+   \                                 In section .text, align 2, keep-with-next
+    151          void LPLD_RTC_Seconds(uint32 data)
+    152          {
+    153            RTC_TSR = data;
+   \                     LPLD_RTC_Seconds:
+   \   00000000   0x....             LDR.N    R1,??DataTable5_5  ;; 0x4003d000
+   \   00000002   0x6008             STR      R0,[R1, #+0]
+    154          }
+   \   00000004   0x4770             BX       LR               ;; return
+    155          
+    156          /*
+    157           * LPLD_RTC_Isr
+    158           * RTC通用中断底层入口函数
+    159           * 
+    160           * 用户无需修改，程序自动进入对应通道中断函数
+    161           */
+
+   \                                 In section .text, align 2, keep-with-next
+    162          void LPLD_RTC_Isr(void)
+    163          { 
+   \                     LPLD_RTC_Isr:
+   \   00000000   0xB580             PUSH     {R7,LR}
+    164            if((RTC_SR & RTC_SR_TIF_MASK)== 0x01)
+   \   00000002   0x....             LDR.N    R0,??DataTable5_7  ;; 0x4003d014
+   \   00000004   0x6800             LDR      R0,[R0, #+0]
+   \   00000006   0x07C0             LSLS     R0,R0,#+31
+   \   00000008   0xD509             BPL.N    ??LPLD_RTC_Isr_0
+    165            {
+    166              //调用用户自定义中断服务
+    167              RTC_ISR[0](); 
+   \   0000000A   0x....             LDR.N    R0,??DataTable5_3
+   \   0000000C   0x6800             LDR      R0,[R0, #+0]
+   \   0000000E   0x4780             BLX      R0
+    168              //清除中断标志位
+    169              RTC_SR |= RTC_SR_TIF_MASK;
+   \   00000010   0x....             LDR.N    R0,??DataTable5_7  ;; 0x4003d014
+   \   00000012   0x6800             LDR      R0,[R0, #+0]
+   \   00000014   0xF050 0x0001      ORRS     R0,R0,#0x1
+   \   00000018   0x....             LDR.N    R1,??DataTable5_7  ;; 0x4003d014
+   \   0000001A   0x6008             STR      R0,[R1, #+0]
+   \   0000001C   0xE01A             B.N      ??LPLD_RTC_Isr_1
+    170              
+    171            }	
+    172            else if((RTC_SR & RTC_SR_TOF_MASK) == 0x02)
+   \                     ??LPLD_RTC_Isr_0:
+   \   0000001E   0x....             LDR.N    R0,??DataTable5_7  ;; 0x4003d014
+   \   00000020   0x6800             LDR      R0,[R0, #+0]
+   \   00000022   0x0780             LSLS     R0,R0,#+30
+   \   00000024   0xD509             BPL.N    ??LPLD_RTC_Isr_2
+    173            {
+    174              //调用用户自定义中断服务
+    175              RTC_ISR[0]();  
+   \   00000026   0x....             LDR.N    R0,??DataTable5_3
+   \   00000028   0x6800             LDR      R0,[R0, #+0]
+   \   0000002A   0x4780             BLX      R0
+    176              //清除中断标志位
+    177              RTC_SR |= RTC_SR_TOF_MASK;
+   \   0000002C   0x....             LDR.N    R0,??DataTable5_7  ;; 0x4003d014
+   \   0000002E   0x6800             LDR      R0,[R0, #+0]
+   \   00000030   0xF050 0x0002      ORRS     R0,R0,#0x2
+   \   00000034   0x....             LDR.N    R1,??DataTable5_7  ;; 0x4003d014
+   \   00000036   0x6008             STR      R0,[R1, #+0]
+   \   00000038   0xE00C             B.N      ??LPLD_RTC_Isr_1
+    178            }	 	
+    179            else if((RTC_SR & RTC_SR_TAF_MASK) == 0x04)
+   \                     ??LPLD_RTC_Isr_2:
+   \   0000003A   0x....             LDR.N    R0,??DataTable5_7  ;; 0x4003d014
+   \   0000003C   0x6800             LDR      R0,[R0, #+0]
+   \   0000003E   0x0740             LSLS     R0,R0,#+29
+   \   00000040   0xD508             BPL.N    ??LPLD_RTC_Isr_1
+    180            {
+    181              //调用用户自定义中断服务
+    182              RTC_ISR[0]();  
+   \   00000042   0x....             LDR.N    R0,??DataTable5_3
+   \   00000044   0x6800             LDR      R0,[R0, #+0]
+   \   00000046   0x4780             BLX      R0
+    183              //清除中断标志位
+    184              RTC_SR |= RTC_SR_TAF_MASK;
+   \   00000048   0x....             LDR.N    R0,??DataTable5_7  ;; 0x4003d014
+   \   0000004A   0x6800             LDR      R0,[R0, #+0]
+   \   0000004C   0xF050 0x0004      ORRS     R0,R0,#0x4
+   \   00000050   0x....             LDR.N    R1,??DataTable5_7  ;; 0x4003d014
+   \   00000052   0x6008             STR      R0,[R1, #+0]
+    185            }	
+    186          }
+   \                     ??LPLD_RTC_Isr_1:
+   \   00000054   0xBD01             POP      {R0,PC}          ;; return
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable5:
+   \   00000000   0x4004803C         DC32     0x4004803c
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable5_1:
+   \   00000000   0x4003D010         DC32     0x4003d010
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable5_2:
+   \   00000000   0x4003D01C         DC32     0x4003d01c
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable5_3:
+   \   00000000   0x........         DC32     RTC_ISR
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable5_4:
+   \   00000000   0x4003D00C         DC32     0x4003d00c
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable5_5:
+   \   00000000   0x4003D000         DC32     0x4003d000
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable5_6:
+   \   00000000   0x4003D008         DC32     0x4003d008
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable5_7:
+   \   00000000   0x4003D014         DC32     0x4003d014
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        0  LPLD_RTC_Alarm
+        0  LPLD_RTC_GetRealTime
+       16  LPLD_RTC_Init
+             16 -> enable_irq
+        8  LPLD_RTC_Isr
+              8 -- Indirect call
+        0  LPLD_RTC_Seconds
+        0  LPLD_RTC_Stop
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable5
+       4  ??DataTable5_1
+       4  ??DataTable5_2
+       4  ??DataTable5_3
+       4  ??DataTable5_4
+       4  ??DataTable5_5
+       4  ??DataTable5_6
+       4  ??DataTable5_7
+       6  LPLD_RTC_Alarm
+       6  LPLD_RTC_GetRealTime
+     118  LPLD_RTC_Init
+      86  LPLD_RTC_Isr
+       6  LPLD_RTC_Seconds
+      14  LPLD_RTC_Stop
+       4  RTC_ISR
+
+ 
+   4 bytes in section .bss
+ 268 bytes in section .text
+ 
+ 268 bytes of CODE memory
+   4 bytes of DATA memory
+
+Errors: none
+Warnings: none

@@ -1,0 +1,380 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.30.1.53127/W32 for ARM     25/Sep/2013  21:07:16 #
+# Copyright 1999-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  D:\中国机器人大赛\robot_project\lib\cpu\sysinit.c        #
+#    Command line =  D:\中国机器人大赛\robot_project\lib\cpu\sysinit.c -D     #
+#                    IAR -D LPLD_K60 -lCN D:\中国机器人大赛\robot_project\pro #
+#                    ject\LPLD_Template\iar\RAM\List\ -lB                     #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\RAM\List\ -o D:\中国机器人大赛\robot_project\project\L #
+#                    PLD_Template\iar\RAM\Obj\ --no_cse --no_unroll           #
+#                    --no_inline --no_code_motion --no_tbaa --no_clustering   #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config "D:\Program Files\IAR        #
+#                    Systems\Embedded Workbench 6.0\arm\INC\c\DLib_Config_Nor #
+#                    mal.h" -I D:\中国机器人大赛\robot_project\project\LPLD_T #
+#                    emplate\iar\..\app\ -I D:\中国机器人大赛\robot_project\p #
+#                    roject\LPLD_Template\iar\..\..\..\lib\common\ -I         #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\cpu\ -I D:\中国机器人大赛\robot_project\p #
+#                    roject\LPLD_Template\iar\..\..\..\lib\cpu\headers\ -I    #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\adc16\ -I                         #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\enet\ -I                          #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\lptmr\ -I                         #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\mcg\ -I                           #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\pmc\ -I                           #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\rtc\ -I                           #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\uart\ -I                          #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\drivers\wdog\ -I                          #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\platforms\ -I                             #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\LPLD\ -I D:\中国机器人大赛\robot_project\ #
+#                    project\LPLD_Template\iar\..\..\..\lib\LPLD\FatFs\ -I    #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\LPLD\USB\ -I                              #
+#                    D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\..\..\..\lib\iar_config_files\ -Ol                     #
+#    List file    =  D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\RAM\List\sysinit.lst                                   #
+#    Object file  =  D:\中国机器人大赛\robot_project\project\LPLD_Template\ia #
+#                    r\RAM\Obj\sysinit.o                                      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\中国机器人大赛\robot_project\lib\cpu\sysinit.c
+      1          /*
+      2           * File:        sysinit.c
+      3           * Purpose:     Kinetis Configuration
+      4           *              Initializes processor to a default state
+      5           *
+      6           * Notes:
+      7           *
+      8           */
+      9          
+     10          #include "common.h"
+     11          #include "sysinit.h"
+     12          #include "uart.h"
+     13          
+     14          /********************************************************************/
+     15          
+     16          /* 实际系统时钟频率 */
+
+   \                                 In section .bss, align 4
+     17          int core_clk_khz;
+   \                     core_clk_khz:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+     18          int core_clk_mhz;
+   \                     core_clk_mhz:
+   \   00000000                      DS8 4
+
+   \                                 In section .bss, align 4
+     19          int periph_clk_khz;
+   \                     periph_clk_khz:
+   \   00000000                      DS8 4
+     20          
+     21          /********************************************************************/
+
+   \                                 In section .text, align 2, keep-with-next
+     22          void sysinit (void)
+     23          {
+   \                     sysinit:
+   \   00000000   0xB580             PUSH     {R7,LR}
+     24                  /*
+     25                   * 使能所有端口的时钟. 为了配置引脚复用则必须使能这里, 所以大多数代码需要配置这些.
+     26                   */
+     27                  SIM_SCGC5 |= (SIM_SCGC5_PORTA_MASK
+     28                                | SIM_SCGC5_PORTB_MASK
+     29                                | SIM_SCGC5_PORTC_MASK
+     30                                | SIM_SCGC5_PORTD_MASK
+     31                                | SIM_SCGC5_PORTE_MASK );
+   \   00000002   0x....             LDR.N    R0,??DataTable2  ;; 0x40048038
+   \   00000004   0x6800             LDR      R0,[R0, #+0]
+   \   00000006   0xF450 0x5078      ORRS     R0,R0,#0x3E00
+   \   0000000A   0x....             LDR.N    R1,??DataTable2  ;; 0x40048038
+   \   0000000C   0x6008             STR      R0,[R1, #+0]
+     32          
+     33           	/* 配置系统时钟 */
+     34          	core_clk_mhz = LPLD_PLL_Setup(CORE_CLK_MHZ);
+   \   0000000E   0x2064             MOVS     R0,#+100
+   \   00000010   0x.... 0x....      BL       LPLD_PLL_Setup
+   \   00000014   0x....             LDR.N    R1,??DataTable2_1
+   \   00000016   0x6008             STR      R0,[R1, #+0]
+     35          
+     36          	/*
+     37                   * 用pll_init函数的返回值来定义变量:core_clk_khz和periph_clk_khz(以kHz为单位)
+     38          	 * 这些变量将在其他功能上
+     39          	 */
+     40          	core_clk_khz = core_clk_mhz * 1000;
+   \   00000018   0x....             LDR.N    R0,??DataTable2_1
+   \   0000001A   0x6800             LDR      R0,[R0, #+0]
+   \   0000001C   0xF44F 0x717A      MOV      R1,#+1000
+   \   00000020   0x4348             MULS     R0,R1,R0
+   \   00000022   0x....             LDR.N    R1,??DataTable2_2
+   \   00000024   0x6008             STR      R0,[R1, #+0]
+     41            	periph_clk_khz = core_clk_khz / (((SIM_CLKDIV1 & SIM_CLKDIV1_OUTDIV2_MASK) >> 24)+ 1);
+   \   00000026   0x....             LDR.N    R0,??DataTable2_2
+   \   00000028   0x6800             LDR      R0,[R0, #+0]
+   \   0000002A   0x....             LDR.N    R1,??DataTable2_3  ;; 0x40048044
+   \   0000002C   0x6809             LDR      R1,[R1, #+0]
+   \   0000002E   0xF3C1 0x6103      UBFX     R1,R1,#+24,#+4
+   \   00000032   0x1C49             ADDS     R1,R1,#+1
+   \   00000034   0xFBB0 0xF0F1      UDIV     R0,R0,R1
+   \   00000038   0x....             LDR.N    R1,??DataTable2_4
+   \   0000003A   0x6008             STR      R0,[R1, #+0]
+     42          
+     43            	/* 
+     44                   *出于仿真的目的, 使能追踪时钟和FlexBus时钟来
+     45            	 */
+     46          	trace_clk_init();
+   \   0000003C   0x.... 0x....      BL       trace_clk_init
+     47            	fb_clk_init();
+   \   00000040   0x.... 0x....      BL       fb_clk_init
+     48          
+     49            	/* 使能选中的 UART */
+     50          
+     51            	if (TERM_PORT == UART3_BASE_PTR)
+     52            	{
+     53                           /* 使能 PTC17 引脚的 UART3_TXD 功能  */
+     54            		PORTC_PCR17 = PORT_PCR_MUX(0x3); // 该引脚的 功能3 是 UART
+     55          
+     56            		/* 使能 PTC16 引脚的 UART3_RXD 功能 */
+     57            		PORTC_PCR16 = PORT_PCR_MUX(0x3); // 该引脚的 功能3 是 UART
+     58            	}
+     59          
+     60            	if (TERM_PORT == UART5_BASE_PTR)
+     61            	{
+     62                           /* 使能 PTE8 引脚的 UART5_TXD 功能  */
+     63            		PORTE_PCR8 = PORT_PCR_MUX(0x3); // 该引脚的 功能3 是 UART
+   \   00000044   0x....             LDR.N    R0,??DataTable2_5  ;; 0x4004d020
+   \   00000046   0xF44F 0x7140      MOV      R1,#+768
+   \   0000004A   0x6001             STR      R1,[R0, #+0]
+     64          
+     65            		/* 使能 PTE9 引脚的 UART5_RXD 功能  */
+     66            		PORTE_PCR9 = PORT_PCR_MUX(0x3); // 该引脚的 功能3 是 UART
+   \   0000004C   0x....             LDR.N    R0,??DataTable2_6  ;; 0x4004d024
+   \   0000004E   0xF44F 0x7140      MOV      R1,#+768
+   \   00000052   0x6001             STR      R1,[R0, #+0]
+     67            	}
+     68            	/* UART0 and UART1 由 core clock 提供时钟源, 但是其他所有 UARTs 由
+     69                   * peripheral clock 提供时钟源. 所以要在这里决定用哪个时钟作为 uart_init 的参数.
+     70                   */
+     71                  if ((TERM_PORT == UART0_BASE_PTR) | (TERM_PORT == UART1_BASE_PTR))
+     72                     uart_init (TERM_PORT, core_clk_khz, TERMINAL_BAUD);
+     73                  else
+     74            	   uart_init (TERM_PORT, periph_clk_khz, TERMINAL_BAUD);
+   \   00000054   0xF45F 0x32E1      MOVS     R2,#+115200
+   \   00000058   0x....             LDR.N    R0,??DataTable2_4
+   \   0000005A   0x6801             LDR      R1,[R0, #+0]
+   \   0000005C   0x....             LDR.N    R0,??DataTable2_7  ;; 0x400eb000
+   \   0000005E   0x.... 0x....      BL       uart_init
+     75                  
+     76          #if(defined(DEBUG_PRINT))  
+     77                  // 打印系统频率
+     78                  printf("Core Clock:%dMHz!\r\n", core_clk_mhz);
+   \   00000062   0x....             LDR.N    R0,??DataTable2_1
+   \   00000064   0x6801             LDR      R1,[R0, #+0]
+   \   00000066   0x....             LDR.N    R0,??DataTable2_8
+   \   00000068   0x.... 0x....      BL       printf
+     79                  printf("Bus Clock:%dkHz!\r\n", periph_clk_khz);
+   \   0000006C   0x....             LDR.N    R0,??DataTable2_4
+   \   0000006E   0x6801             LDR      R1,[R0, #+0]
+   \   00000070   0x....             LDR.N    R0,??DataTable2_9
+   \   00000072   0x.... 0x....      BL       printf
+     80          #endif
+     81          }
+   \   00000076   0xBD01             POP      {R0,PC}          ;; return
+     82          /********************************************************************/
+
+   \                                 In section .text, align 2, keep-with-next
+     83          void trace_clk_init(void)
+     84          {
+     85          	/* Set the trace clock to the core clock frequency */
+     86          	SIM_SOPT2 |= SIM_SOPT2_TRACECLKSEL_MASK;
+   \                     trace_clk_init:
+   \   00000000   0x....             LDR.N    R0,??DataTable2_10  ;; 0x40048004
+   \   00000002   0x6800             LDR      R0,[R0, #+0]
+   \   00000004   0xF450 0x5080      ORRS     R0,R0,#0x1000
+   \   00000008   0x....             LDR.N    R1,??DataTable2_10  ;; 0x40048004
+   \   0000000A   0x6008             STR      R0,[R1, #+0]
+     87          
+     88          	/* Enable the TRACE_CLKOUT pin function on PTA6 (alt7 function) */
+     89          	PORTA_PCR6 = ( PORT_PCR_MUX(0x7));
+   \   0000000C   0x....             LDR.N    R0,??DataTable2_11  ;; 0x40049018
+   \   0000000E   0xF44F 0x61E0      MOV      R1,#+1792
+   \   00000012   0x6001             STR      R1,[R0, #+0]
+     90          }
+   \   00000014   0x4770             BX       LR               ;; return
+     91          /********************************************************************/
+
+   \                                 In section .text, align 2, keep-with-next
+     92          void fb_clk_init(void)
+     93          {
+     94          	/* Enable the clock to the FlexBus module */
+     95                  SIM_SCGC7 |= SIM_SCGC7_FLEXBUS_MASK;
+   \                     fb_clk_init:
+   \   00000000   0x....             LDR.N    R0,??DataTable2_12  ;; 0x40048040
+   \   00000002   0x6800             LDR      R0,[R0, #+0]
+   \   00000004   0xF050 0x0001      ORRS     R0,R0,#0x1
+   \   00000008   0x....             LDR.N    R1,??DataTable2_12  ;; 0x40048040
+   \   0000000A   0x6008             STR      R0,[R1, #+0]
+     96          
+     97           	/* Enable the FB_CLKOUT function on PTC3 (alt5 function) */
+     98          	PORTC_PCR3 = ( PORT_PCR_MUX(0x5));
+   \   0000000C   0x....             LDR.N    R0,??DataTable2_13  ;; 0x4004b00c
+   \   0000000E   0xF44F 0x61A0      MOV      R1,#+1280
+   \   00000012   0x6001             STR      R1,[R0, #+0]
+     99          }
+   \   00000014   0x4770             BX       LR               ;; return
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2:
+   \   00000000   0x40048038         DC32     0x40048038
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_1:
+   \   00000000   0x........         DC32     core_clk_mhz
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_2:
+   \   00000000   0x........         DC32     core_clk_khz
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_3:
+   \   00000000   0x40048044         DC32     0x40048044
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_4:
+   \   00000000   0x........         DC32     periph_clk_khz
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_5:
+   \   00000000   0x4004D020         DC32     0x4004d020
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_6:
+   \   00000000   0x4004D024         DC32     0x4004d024
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_7:
+   \   00000000   0x400EB000         DC32     0x400eb000
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_8:
+   \   00000000   0x........         DC32     `?<Constant "Core Clock:%dMHz!\\r\\n">`
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_9:
+   \   00000000   0x........         DC32     `?<Constant "Bus Clock:%dkHz!\\r\\n">`
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_10:
+   \   00000000   0x40048004         DC32     0x40048004
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_11:
+   \   00000000   0x40049018         DC32     0x40049018
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_12:
+   \   00000000   0x40048040         DC32     0x40048040
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable2_13:
+   \   00000000   0x4004B00C         DC32     0x4004b00c
+
+   \                                 In section .rodata, align 4
+   \                     `?<Constant "Core Clock:%dMHz!\\r\\n">`:
+   \   00000000   0x43 0x6F          DC8 "Core Clock:%dMHz!\015\012"
+   \              0x72 0x65    
+   \              0x20 0x43    
+   \              0x6C 0x6F    
+   \              0x63 0x6B    
+   \              0x3A 0x25    
+   \              0x64 0x4D    
+   \              0x48 0x7A    
+   \              0x21 0x0D    
+   \              0x0A 0x00    
+
+   \                                 In section .rodata, align 4
+   \                     `?<Constant "Bus Clock:%dkHz!\\r\\n">`:
+   \   00000000   0x42 0x75          DC8 "Bus Clock:%dkHz!\015\012"
+   \              0x73 0x20    
+   \              0x43 0x6C    
+   \              0x6F 0x63    
+   \              0x6B 0x3A    
+   \              0x25 0x64    
+   \              0x6B 0x48    
+   \              0x7A 0x21    
+   \              0x0D 0x0A    
+   \              0x00         
+   \   00000013   0x00               DC8 0
+    100          /********************************************************************/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        0  fb_clk_init
+        8  sysinit
+             8 -> LPLD_PLL_Setup
+             8 -> fb_clk_init
+             8 -> printf
+             8 -> trace_clk_init
+             8 -> uart_init
+        0  trace_clk_init
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      20  ?<Constant "Bus Clock:%dkHz!\r\n">
+      20  ?<Constant "Core Clock:%dMHz!\r\n">
+       4  ??DataTable2
+       4  ??DataTable2_1
+       4  ??DataTable2_10
+       4  ??DataTable2_11
+       4  ??DataTable2_12
+       4  ??DataTable2_13
+       4  ??DataTable2_2
+       4  ??DataTable2_3
+       4  ??DataTable2_4
+       4  ??DataTable2_5
+       4  ??DataTable2_6
+       4  ??DataTable2_7
+       4  ??DataTable2_8
+       4  ??DataTable2_9
+       4  core_clk_khz
+       4  core_clk_mhz
+      22  fb_clk_init
+       4  periph_clk_khz
+     120  sysinit
+      22  trace_clk_init
+
+ 
+  12 bytes in section .bss
+  40 bytes in section .rodata
+ 220 bytes in section .text
+ 
+ 220 bytes of CODE  memory
+  40 bytes of CONST memory
+  12 bytes of DATA  memory
+
+Errors: none
+Warnings: none

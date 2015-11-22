@@ -1,0 +1,167 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.40.1.53790/W32 for ARM     30/Jul/2014  22:50:09 #
+# Copyright 1999-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\app\util.c                               #
+#    Command line =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\app\util.c -D IAR -D LPLD_K60 -lCN       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\ -lB                      #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\ -o                       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\Obj\ --no_cse --no_unroll      #
+#                    --no_inline --no_code_motion --no_tbaa --no_clustering   #
+#                    --no_scheduling --debug --endian=little --cpu=Cortex-M4  #
+#                    -e --fpu=None --dlib_config                              #
+#                    D:\IAR\arm\INC\c\DLib_Config_Normal.h -I                 #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\app\ -I                           #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\common\ -I              #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\cpu\ -I                 #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\cpu\headers\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\adc16\ -I       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\enet\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\lptmr\ -I       #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\mcg\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\pmc\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\rtc\ -I         #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\uart\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\drivers\wdog\ -I        #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\platforms\ -I           #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\ -I                #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\FatFs\ -I          #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\LPLD\USB\ -I            #
+#                    C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\..\..\..\lib\iar_config_files\ -Ol   #
+#    List file    =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\List\util.lst                  #
+#    Object file  =  C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\projec #
+#                    t\robot_car_com\iar\FLASH\Obj\util.o                     #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\hp\Desktop\安防机器人大赛\程序工程\robot\project\robot_car_com\app\util.c
+      1          #include "common.h"
+      2          #include "HAL_GPIO.h"
+
+   \                                 In section .text, align 2, keep-with-next
+      3          void delayMs(uint16 t)
+      4          {
+      5            uint32 i=t*20000;
+   \                     delayMs:
+   \   00000000   0xB280             UXTH     R0,R0            ;; ZeroExt  R0,R0,#+16,#+16
+   \   00000002   0xF644 0x6120      MOVW     R1,#+20000
+   \   00000006   0x4348             MULS     R0,R1,R0
+      6            while(i--);
+   \                     ??delayMs_0:
+   \   00000008   0x0001             MOVS     R1,R0
+   \   0000000A   0x1E48             SUBS     R0,R1,#+1
+   \   0000000C   0x2900             CMP      R1,#+0
+   \   0000000E   0xD1FB             BNE.N    ??delayMs_0
+      7          }
+   \   00000010   0x4770             BX       LR               ;; return
+      8          
+
+   \                                 In section .text, align 2, keep-with-next
+      9          void delayUs(uint16 t)
+     10          {
+     11            uint32 i=t*20;
+   \                     delayUs:
+   \   00000000   0xB280             UXTH     R0,R0            ;; ZeroExt  R0,R0,#+16,#+16
+   \   00000002   0x2114             MOVS     R1,#+20
+   \   00000004   0x4348             MULS     R0,R1,R0
+     12            while(i--);
+   \                     ??delayUs_0:
+   \   00000006   0x0001             MOVS     R1,R0
+   \   00000008   0x1E48             SUBS     R0,R1,#+1
+   \   0000000A   0x2900             CMP      R1,#+0
+   \   0000000C   0xD1FB             BNE.N    ??delayUs_0
+     13          }
+   \   0000000E   0x4770             BX       LR               ;; return
+     14          
+
+   \                                 In section .text, align 2, keep-with-next
+     15          int abs(int x)
+     16          {
+     17          	if(x>0) return x;
+   \                     abs:
+   \   00000000   0x2801             CMP      R0,#+1
+   \   00000002   0xDA00             BGE.N    ??abs_0
+     18          	else return -x;
+   \                     ??abs_1:
+   \   00000004   0x4240             RSBS     R0,R0,#+0
+   \                     ??abs_0:
+   \   00000006   0x4770             BX       LR               ;; return
+     19          }
+     20          
+
+   \                                 In section .text, align 2, keep-with-next
+     21          void beep()
+     22          {
+   \                     beep:
+   \   00000000   0xB580             PUSH     {R7,LR}
+     23            LPLD_GPIO_Set_b(PTB, 23, OUTPUT_H);
+   \   00000002   0x2201             MOVS     R2,#+1
+   \   00000004   0x2117             MOVS     R1,#+23
+   \   00000006   0x2001             MOVS     R0,#+1
+   \   00000008   0x.... 0x....      BL       LPLD_GPIO_Set_b
+     24            delayMs(10);
+   \   0000000C   0x200A             MOVS     R0,#+10
+   \   0000000E   0x.... 0x....      BL       delayMs
+     25             LPLD_GPIO_Set_b(PTB, 23, OUTPUT_L);
+   \   00000012   0x2200             MOVS     R2,#+0
+   \   00000014   0x2117             MOVS     R1,#+23
+   \   00000016   0x2001             MOVS     R0,#+1
+   \   00000018   0x.... 0x....      BL       LPLD_GPIO_Set_b
+     26          }
+   \   0000001C   0xBD01             POP      {R0,PC}          ;; return
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+        0  abs
+        8  beep
+             8 -> LPLD_GPIO_Set_b
+             8 -> delayMs
+        0  delayMs
+        0  delayUs
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       8  abs
+      30  beep
+      18  delayMs
+      16  delayUs
+
+ 
+ 72 bytes in section .text
+ 
+ 72 bytes of CODE memory
+
+Errors: none
+Warnings: none
